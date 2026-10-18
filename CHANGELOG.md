@@ -1,0 +1,12 @@
+# Changelog
+
+## 0.4.3
+
+First public release.
+
+- **Live editor**: Markdown opens in an editable, formatted view with a formatting toolbar; raw Markdown shows only on the lines you edit. Switch to the source with Ctrl+Shift+V.
+- **Links to any file**: `[[wikilinks]]` and Markdown links to notes, code, SQL, images and binaries, with autocomplete, hover previews and go-to-definition.
+- **Images**: Markdown images, `![[embeds]]`, HTML `<img>` tags, linked badges and images in tables.
+- **Rename-safe links**: renaming or moving a file or folder updates every link to it and saves the changed files.
+- **Graph**: a side bar graph that follows the open file, plus a full graph view, with Docs/Files filters, folder colours from `.diamond/graph.yml` and an optional legend.
+- **Backlinks and outgoing links** panels, and word, character and link counts in the status bar.
