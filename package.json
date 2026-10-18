@@ -3,7 +3,7 @@
   "displayName": "Diamond Documentation",
   "description": "Write and navigate project documentation in VS Code: an editable formatted editor, links to any file, backlinks and an interactive graph of your docs and code.",
   "version": "0.4.3",
-  "publisher": "your-publisher-id",
+  "publisher": "christian-jaimes",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -414,10 +414,11 @@
     "compile": "tsc -p ./ --noEmit && node build.mjs",
     "watch": "node build.mjs --watch",
     "vscode:prepublish": "tsc -p ./ --noEmit && node build.mjs --production",
-    "package": "npx @vscode/vsce package",
+    "package": "vsce package --no-dependencies",
     "test": "tsc -p ./ && node build.mjs && node test/run.js",
     "bundle-report": "node scripts/bundle-report.mjs",
-    "build-icon": "node scripts/build-icon.mjs"
+    "build-icon": "node scripts/build-icon.mjs",
+    "publish": "vsce publish --no-dependencies"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.7.1",
@@ -432,6 +433,7 @@
     "@types/node": "^20.11.0",
     "@types/vscode": "~1.85.0",
     "@vscode/codicons": "^0.0.36",
+    "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.24.2",
     "markdown-it": "^14.1.0",
     "sharp": "^0.33.5",

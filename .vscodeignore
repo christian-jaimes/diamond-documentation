@@ -12,3 +12,6 @@ tsconfig.json
 scripts/**
 media/logo.svg
 media/graph.js
+.github/**
+.gitignore
+.gitattributes
