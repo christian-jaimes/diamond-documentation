@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<!-- Dev harness: serve the project folder with any static server and open this page
+     to work on the live editor without launching VS Code. -->
+<link rel="stylesheet" href="../media/liveEditor.css">
+<style>
+  body {
+    --vscode-editor-background: #1f1f1f; --vscode-editor-foreground: #d4d4d4; --vscode-font-family: "Segoe UI", sans-serif;
+    --vscode-editor-font-family: Consolas, monospace; --vscode-textLink-foreground: #4daafc; --vscode-descriptionForeground: #9d9d9d;
+    --vscode-textCodeBlock-background: #2b2b2b; --vscode-editorCursor-foreground: #aeafad; --vscode-focusBorder: #0078d4;
+    --vscode-editor-selectionBackground: #264f78; --vscode-textBlockQuote-border: #616161; --vscode-editorWidget-border: #454545;
+  }
+</style></head>
+<body><div id="editor"></div>
+<script>
+window.sent = [];
+const sample = [
+  '# Project Docs', '',
+  'Start at [[Getting Started]] or read the [[Architecture Overview|architecture]]. Missing: [[Deployment]].', '',
+  'Text with **bold**, *italic*, ~~strike~~, ==highlight== and `inline code`. Tag: #docs/api', '',
+  '## Tasks', '- [x] Write the index', '- [ ] Document [[api-client.ts]]', '- plain bullet', '1. first', '2. second', '',
+  '> A quote with a [link](docs/Getting%20Started.md).', '',
+  '| Component | Doc |', '| --- | :---: |', '| API | [[API Design]] |', '| Storage | **db** |', '',
+  '```sql', 'SELECT * FROM users;', '```', '', '---', '', 'Logo: ![[logo.svg|60]]', '',
+  '## Images', '',
+  'Markdown: ![diagram](assets/logo.svg) and sized ![small|40](assets/logo.svg)', '',
+  '<p align="center"><img src="assets/logo.svg" width="90" alt="HTML image"></p>', '',
+  'Inline HTML: <img src="assets/logo.svg" height="24"> in a sentence.', '',
+  'Badge: [![badge](assets/logo.svg)](https://example.com)', '',
+  '| Icon | Name |', '| --- | --- |', '| ![i](assets/logo.svg) | logo |', '',
+].join('\n');
+window.acquireVsCodeApi = () => ({
+  postMessage: m => {
+    sent.push(m);
+    if (m.type === 'ready') { window.postMessage({ type: 'init', text: sample, settings: { toolbar: true } }, '*'); }
+    if (m.type === 'resolve') {
+      const items = {};
+      for (const i of m.items) {
+        items[i.key] = /Deployment/.test(i.target) ? { exists: false }
+          : { exists: true, path: i.target, src: /logo\.svg$/.test(i.target) ? 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><circle cx="40" cy="40" r="36" fill="%237c3aed"/></svg>'.replace('%23', '#')) : undefined };
+      }
+      setTimeout(() => window.postMessage({ type: 'resolved', items }, '*'), 10);
+    }
+  },
+  getState: () => null, setState: () => {},
+});
+</script>
+<script>
+  // Always load the current bundle (no stale browser cache while developing).
+  const s = document.createElement('script'); s.src = '../dist/liveEditor.js?' + Date.now(); document.body.appendChild(s);
+</script>
+</body></html>

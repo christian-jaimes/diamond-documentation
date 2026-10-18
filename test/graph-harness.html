@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<!-- Dev harness: serve the project folder with any static server and open this page
+     (add ?compact for the side bar layout) to work on the graph without launching VS Code. -->
+<link rel="stylesheet" href="../media/graph.css">
+<style>body{--vscode-editor-background:#1e1e1e;--vscode-editor-foreground:#ddd;--vscode-focusBorder:#0a84ff;--vscode-editorWidget-background:#252526;--vscode-foreground:#ddd;--vscode-button-secondaryBackground:#3a3d41;--vscode-button-secondaryForeground:#ddd}</style>
+</head>
+<body>
+  <div id="toolbar">
+    <input id="search" type="search" placeholder="Filter (name, path or #tag)…">
+    <button id="toggleFilters" class="icon">☰</button>
+    <div id="filters">
+      <label><input id="local" type="checkbox" checked> Local</label>
+      <label id="depthWrap">Depth <input id="depth" type="range" min="1" max="5" value="2"><span id="depthVal">2</span></label>
+      <label><input id="docs" type="checkbox" checked> Docs</label>
+      <label><input id="files" type="checkbox" checked> Files</label>
+      <label><input id="ghosts" type="checkbox" checked> Unresolved</label>
+      <label><input id="orphans" type="checkbox" checked> Orphans</label>
+      <label><input id="labels" type="checkbox" checked> Labels</label>
+      <label title="Colour legend from .diamond/graph.yml"><input id="showLegend" type="checkbox"> Legend</label>
+      <button id="fit">Fit</button>
+      <button id="colors">Colours…</button>
+    </div>
+  </div>
+  <canvas id="graph"></canvas>
+  <div id="legend"></div>
+  <div id="tooltip"></div>
+  <div id="empty" style="display:none"></div>
+  <span id="stats" class="corner"></span>
+<script>
+if (location.search.includes('compact')) { document.body.classList.add('compact'); }
+window.sent = [];
+const palette = { docs: '#4f9dff', 'docs/architecture': '#a371f7', src: '#f0883e', database: '#3fb950' };
+function seed() {
+  const folders = Object.keys(palette), nodes = [], edges = [];
+  for (let i = 0; i < 70; i++) {
+    const folder = folders[i % folders.length], file = i % 6 === 0;
+    nodes.push({ id: 'n' + i, label: file ? `script${i}.sql` : `Note ${i}`, path: `${folder}/${file ? 'script' + i + '.sql' : 'Note ' + i + '.md'}`, type: file ? 'file' : 'note', group: folder.split('/')[0], tags: [], color: palette[folder] });
+  }
+  for (let i = 1; i < 70; i++) { edges.push({ source: 'n' + i, target: 'n' + Math.floor(Math.random() * i) }); }
+  const legend = folders.map(f => ({ label: f, color: palette[f] }));
+  window.postMessage({ type: 'mode', local: !location.search.includes('global'), depth: 1, focus: 'n0' }, '*');
+  window.postMessage({ type: 'data', graph: { nodes, edges }, legend }, '*');
+}
+window.acquireVsCodeApi = () => ({ postMessage: m => { sent.push(m); if (m.type === 'ready') { seed(); } }, getState: () => null, setState: () => {} });
+</script>
+<script>
+  // Always load the current graph.js (no stale browser cache while developing).
+  const s = document.createElement('script'); s.src = '../media/graph.js?' + Date.now(); document.body.appendChild(s);
+</script>
+</body></html>

@@ -1,0 +1,4 @@
+# Keep LF line endings in the repository (files are checked out with the platform default).
+* text=auto eol=lf
+*.png binary
+*.vsix binary

@@ -1,0 +1,14 @@
+# Diamond Documentation – graph colours
+folders:
+  docs: "#4f9dff"
+  docs/architecture: "#a371f7"
+  src: "#f0883e"
+  database: "#3fb950"
+
+patterns:
+  "**/*.svg": "#db61a2"
+
+defaults:
+  documentation: "#9da5b4"
+  files: "#d29922"
+  unresolved: "#6e7681"

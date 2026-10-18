@@ -1,0 +1,445 @@
+{
+  "name": "diamond-documentation",
+  "displayName": "Diamond Documentation",
+  "description": "Write and navigate project documentation in VS Code: an editable formatted editor, links to any file, backlinks and an interactive graph of your docs and code.",
+  "version": "0.4.3",
+  "publisher": "your-publisher-id",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christian-jaimes/diamond-documentation.git"
+  },
+  "homepage": "https://github.com/christian-jaimes/diamond-documentation#readme",
+  "bugs": {
+    "url": "https://github.com/christian-jaimes/diamond-documentation/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization",
+    "Notebooks"
+  ],
+  "keywords": [
+    "markdown",
+    "documentation",
+    "wikilinks",
+    "graph",
+    "notes",
+    "knowledge base",
+    "backlinks",
+    "wysiwyg"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:markdown",
+    "workspaceContains:**/*.md"
+  ],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "diamond.liveEditor",
+        "displayName": "Diamond Live Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          },
+          {
+            "filenamePattern": "*.markdown"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "commands": [
+      {
+        "command": "diamond.toggleBold",
+        "title": "Toggle Bold",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleItalic",
+        "title": "Toggle Italic",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleStrikethrough",
+        "title": "Toggle Strikethrough",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleHighlight",
+        "title": "Toggle Highlight (==text==)",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleInlineCode",
+        "title": "Toggle Inline Code",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.insertCodeBlock",
+        "title": "Insert / Wrap Code Block",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleBullet",
+        "title": "Toggle Bullet List",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleNumbered",
+        "title": "Toggle Numbered List",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleCheckbox",
+        "title": "Toggle Checkbox",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.cycleHeading",
+        "title": "Cycle Heading Level",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.toggleQuote",
+        "title": "Toggle Blockquote",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.insertTable",
+        "title": "Insert Table",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.formatTable",
+        "title": "Format Table at Cursor",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.insertLink",
+        "title": "Insert Link to File…",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.openLiveEditor",
+        "title": "Open in Live Editor",
+        "category": "Diamond",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "diamond.openSourceEditor",
+        "title": "Open Markdown Source",
+        "category": "Diamond",
+        "icon": "$(code)"
+      },
+      {
+        "command": "diamond.toggleLiveEditorDefault",
+        "title": "Toggle Opening Markdown in the Live Editor",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.openGraph",
+        "title": "Open Graph View",
+        "category": "Diamond",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "diamond.openLocalGraph",
+        "title": "Open Local Graph (current file)",
+        "category": "Diamond",
+        "icon": "$(type-hierarchy-sub)"
+      },
+      {
+        "command": "diamond.configureGraphColors",
+        "title": "Configure Graph Colours",
+        "category": "Diamond",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "diamond.reindex",
+        "title": "Rebuild Link Index",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.refreshBacklinks",
+        "title": "Refresh Backlinks",
+        "category": "Diamond",
+        "icon": "$(refresh)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "diamond.toggleBold",
+        "key": "ctrl+b",
+        "mac": "cmd+b",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleItalic",
+        "key": "ctrl+i",
+        "mac": "cmd+i",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleStrikethrough",
+        "key": "ctrl+shift+x",
+        "mac": "cmd+shift+x",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleHighlight",
+        "key": "ctrl+shift+h",
+        "mac": "cmd+shift+h",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleInlineCode",
+        "key": "ctrl+e",
+        "mac": "cmd+e",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.insertCodeBlock",
+        "key": "ctrl+shift+k",
+        "mac": "cmd+shift+k",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleCheckbox",
+        "key": "ctrl+l",
+        "mac": "cmd+l",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleBullet",
+        "key": "ctrl+shift+8",
+        "mac": "cmd+shift+8",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.toggleNumbered",
+        "key": "ctrl+shift+7",
+        "mac": "cmd+shift+7",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.cycleHeading",
+        "key": "ctrl+shift+]",
+        "mac": "cmd+shift+]",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.insertLink",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+alt+l",
+        "when": "editorTextFocus && editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor' && !sideBarFocus && !panelFocus && !auxiliaryBarFocus"
+      },
+      {
+        "command": "diamond.openGraph",
+        "key": "ctrl+alt+g",
+        "mac": "cmd+alt+g"
+      },
+      {
+        "command": "diamond.openLiveEditor",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorTextFocus && editorLangId == markdown"
+      },
+      {
+        "command": "diamond.openSourceEditor",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "activeCustomEditorId == 'diamond.liveEditor'"
+      },
+      {
+        "command": "diamond.onEnter",
+        "key": "enter",
+        "when": "editorTextFocus && editorLangId == markdown && !suggestWidgetVisible && !editorHasMultipleSelections && !inlineSuggestionVisible && config.diamond.listContinuation"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "diamond",
+          "title": "Diamond Documentation",
+          "icon": "media/diamond.svg"
+        }
+      ]
+    },
+    "views": {
+      "diamond": [
+        {
+          "type": "webview",
+          "id": "diamond.graphView",
+          "name": "Graph"
+        },
+        {
+          "id": "diamond.backlinks",
+          "name": "Backlinks"
+        },
+        {
+          "id": "diamond.outgoing",
+          "name": "Outgoing Links"
+        }
+      ]
+    },
+    "menus": {
+      "editor/title": [
+        {
+          "command": "diamond.openLiveEditor",
+          "when": "editorLangId == markdown && !activeCustomEditorId",
+          "group": "navigation@1"
+        },
+        {
+          "command": "diamond.openSourceEditor",
+          "when": "activeCustomEditorId == 'diamond.liveEditor'",
+          "group": "navigation@1"
+        },
+        {
+          "command": "diamond.openLocalGraph",
+          "when": "editorLangId == markdown || activeCustomEditorId == 'diamond.liveEditor'",
+          "group": "navigation@2"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "diamond.configureGraphColors",
+          "when": "view == diamond.graphView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "diamond.openGraph",
+          "when": "view == diamond.graphView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "diamond.refreshBacklinks",
+          "when": "view == diamond.backlinks",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "diamond.openLiveEditor",
+          "when": "resourceExtname == .md",
+          "group": "navigation@9"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "diamond.refreshBacklinks",
+          "when": "false"
+        }
+      ]
+    },
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "./media/preview.css"
+    ],
+    "configuration": {
+      "title": "Diamond Documentation",
+      "properties": {
+        "diamond.exclude": {
+          "type": "string",
+          "default": "**/{node_modules,.git}/**",
+          "description": "Glob of files to ignore when indexing. Every other file, of any type, can be linked."
+        },
+        "diamond.maxFiles": {
+          "type": "number",
+          "default": 50000,
+          "description": "Maximum number of files to index."
+        },
+        "diamond.graph.showFiles": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show linked non-Markdown files (squares) in the graph by default."
+        },
+        "diamond.graph.showOrphans": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notes without any links in the graph by default."
+        },
+        "diamond.listContinuation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Continue bullet / numbered / checkbox lists when pressing Enter in the source editor."
+        },
+        "diamond.updateLinksOnRename": {
+          "type": "boolean",
+          "default": true,
+          "description": "When a file or folder is renamed or moved, update every link to it and save the changed files."
+        },
+        "diamond.newNoteFolder": {
+          "type": "string",
+          "default": "",
+          "description": "Folder (relative to the workspace root) for notes created from unresolved links. Empty = same folder as the current note."
+        },
+        "diamond.liveEditor.openByDefault": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open Markdown files in the Diamond live editor. Git diffs and files opened with \"Open Markdown Source\" still use the text editor."
+        },
+        "diamond.liveEditor.toolbar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the formatting toolbar at the top of the live editor."
+        },
+        "diamond.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show word, character, backlink and link counts in the status bar for Markdown files."
+        },
+        "diamond.liveEditor.readableLineLength": {
+          "type": "boolean",
+          "default": true,
+          "description": "Limit the live editor to a comfortable reading width."
+        },
+        "diamond.liveEditor.fontSize": {
+          "type": "number",
+          "default": 0,
+          "description": "Font size of the live editor in pixels (0 = default)."
+        },
+        "diamond.liveEditor.fontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family of the live editor (empty = VS Code UI font)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./ --noEmit && node build.mjs",
+    "watch": "node build.mjs --watch",
+    "vscode:prepublish": "tsc -p ./ --noEmit && node build.mjs --production",
+    "package": "npx @vscode/vsce package",
+    "test": "tsc -p ./ && node build.mjs && node test/run.js",
+    "bundle-report": "node scripts/bundle-report.mjs",
+    "build-icon": "node scripts/build-icon.mjs"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.7.1",
+    "@codemirror/lang-markdown": "^6.3.1",
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/search": "^6.5.8",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.1",
+    "@lezer/highlight": "^1.2.1",
+    "@lezer/markdown": "^1.4.0",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "~1.85.0",
+    "@vscode/codicons": "^0.0.36",
+    "esbuild": "^0.24.2",
+    "markdown-it": "^14.1.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.4.0"
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#0f1c2b",
+    "theme": "dark"
+  }
+}

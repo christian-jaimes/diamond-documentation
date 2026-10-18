@@ -1,0 +1,14 @@
+.vscode/**
+.claude/**
+src/**
+out/**
+test/**
+sample-docs/**
+node_modules/**
+build.mjs
+tsconfig.json
+**/*.map
+*.vsix
+scripts/**
+media/logo.svg
+media/graph.js

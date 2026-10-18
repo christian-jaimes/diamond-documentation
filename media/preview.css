@@ -1,0 +1,19 @@
+mark {
+  background: rgba(255, 208, 0, 0.4);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+a.diamond-link { text-decoration: none; border-bottom: 1px solid currentColor; }
+a.diamond-unresolved { opacity: 0.6; border-bottom-style: dashed; }
+.diamond-task-item { list-style: none; margin-left: -1.4em; }
+.diamond-task-item.done { opacity: 0.65; text-decoration: line-through; }
+.diamond-task { margin-right: 0.3em; vertical-align: middle; }
+.diamond-embed {
+  border-left: 3px solid var(--vscode-textLink-foreground, #3794ff);
+  padding: 0.2em 1em; margin: 0.8em 0;
+  background: rgba(127, 127, 127, 0.08);
+  border-radius: 0 4px 4px 0;
+}
+.diamond-embed-title { font-size: 0.85em; opacity: 0.7; margin-bottom: 0.3em; }
+.diamond-embed-img { max-width: 100%; }
