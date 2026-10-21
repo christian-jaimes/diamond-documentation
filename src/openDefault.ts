@@ -55,9 +55,11 @@ export function registerOpenByDefault(ctx: vscode.ExtensionContext, live: LiveEd
     }),
     vscode.commands.registerCommand('diamond._redirectTab', (tab: vscode.Tab) => redirect(tab)),
     // Switch between the live editor and the source in place (same tab position).
+    // Unsaved changes are saved first, so closing the old view never asks "Save changes?".
     vscode.commands.registerCommand('diamond.openSourceEditor', async (uri?: vscode.Uri) => {
       const target = uri ?? live.active()?.document.uri ?? vscode.window.activeTextEditor?.document.uri;
       if (!target) { return; }
+      await saveIfDirty(target);
       sourceWanted.add(target.toString());
       const old = findTab(target, t => t.input instanceof vscode.TabInputCustom);
       await vscode.commands.executeCommand('vscode.openWith', target, 'default', old?.group.viewColumn);
@@ -66,6 +68,7 @@ export function registerOpenByDefault(ctx: vscode.ExtensionContext, live: LiveEd
     vscode.commands.registerCommand('diamond.openLiveEditor', async (uri?: vscode.Uri) => {
       const target = uri ?? vscode.window.activeTextEditor?.document.uri;
       if (!target) { return; }
+      await saveIfDirty(target);
       sourceWanted.delete(target.toString());
       const old = findTab(target, t => t.input instanceof vscode.TabInputText);
       await vscode.commands.executeCommand('vscode.openWith', target, LiveEditorProvider.viewType, old?.group.viewColumn);
@@ -80,6 +83,12 @@ export function registerOpenByDefault(ctx: vscode.ExtensionContext, live: LiveEd
 export function redirectActiveTabOnStartup() {
   const tab = vscode.window.tabGroups.activeTabGroup.activeTab;
   if (tab) { void vscode.commands.executeCommand('diamond._redirectTab', tab); }
+}
+
+async function saveIfDirty(uri: vscode.Uri) {
+  const key = uri.toString();
+  const doc = vscode.workspace.textDocuments.find(d => d.uri.toString() === key);
+  if (doc?.isDirty) { await doc.save(); }
 }
 
 function findTab(uri: vscode.Uri, kind: (t: vscode.Tab) => boolean): vscode.Tab | undefined {

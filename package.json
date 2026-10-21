@@ -2,7 +2,7 @@
   "name": "diamond-documentation",
   "displayName": "Diamond Documentation",
   "description": "Write and navigate project documentation in VS Code: an editable formatted editor, links to any file, backlinks and an interactive graph of your docs and code.",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "publisher": "christian-jaimes",
   "license": "MIT",
   "repository": {

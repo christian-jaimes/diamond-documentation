@@ -4,3 +4,4 @@ dist
 *.vsix
 test/integration/result.txt
 .claude/
+test/integration/*-result.txt

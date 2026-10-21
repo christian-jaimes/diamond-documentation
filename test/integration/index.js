@@ -166,6 +166,43 @@ async function main() {
   await vscode.workspace.fs.delete(imgNote);
   log.push('images ok');
 
+  // Clipboard in the live editor (Ctrl+C/X/V run the same path as these commands)
+  await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+  const clipNote = at('clipboard-test.md');
+  await vscode.workspace.fs.writeFile(clipNote, Buffer.from('hello world'));
+  await vscode.commands.executeCommand('vscode.openWith', clipNote, 'diamond.liveEditor');
+  const clipDoc = await vscode.workspace.openTextDocument(clipNote);
+  await wait(2500);
+  const select = range => vscode.commands.executeCommand('diamond._probeLiveEditor', range);
+  await select([0, 5]);
+  await vscode.commands.executeCommand('diamond.liveCopy');
+  await waitFor(async () => (await vscode.env.clipboard.readText()) === 'hello', 'copy');
+  await select([5, 11]);
+  await vscode.commands.executeCommand('diamond.liveCut');
+  await waitFor(async () => (await vscode.env.clipboard.readText()) === ' world' && clipDoc.getText() === 'hello', 'cut');
+  await vscode.env.clipboard.writeText('XYZ ');
+  await select([0, 0]);
+  await vscode.commands.executeCommand('diamond.livePaste');
+  await waitFor(() => clipDoc.getText() === 'XYZ hello', 'paste (got ' + JSON.stringify(clipDoc.getText()) + ')');
+  log.push('clipboard ok');
+
+  // Switching views with unsaved changes saves first (no "Save changes?" prompt, which would hang this test)
+  assert.ok(clipDoc.isDirty, 'expected unsaved changes before switching');
+  await vscode.commands.executeCommand('diamond.openSourceEditor');
+  await waitFor(() => activeInput() instanceof vscode.TabInputText && tabCount() === 1, 'switch to source');
+  assert.ok(!clipDoc.isDirty, 'switching to the source should save');
+  const srcEdit = new vscode.WorkspaceEdit();
+  srcEdit.insert(clipNote, new vscode.Position(0, 0), '# ');
+  await vscode.workspace.applyEdit(srcEdit);
+  assert.ok(clipDoc.isDirty);
+  await vscode.commands.executeCommand('diamond.openLiveEditor');
+  await waitFor(() => activeInput() instanceof vscode.TabInputCustom && tabCount() === 1, 'switch to live editor');
+  assert.ok(!clipDoc.isDirty, 'switching to the live editor should save');
+  assert.strictEqual(Buffer.from(await vscode.workspace.fs.readFile(clipNote)).toString(), '# XYZ hello');
+  await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+  await vscode.workspace.fs.delete(clipNote);
+  log.push('switch saves ok');
+
   // The side bar graph view resolves
   await vscode.commands.executeCommand('diamond.graphView.focus');
   await wait(800);

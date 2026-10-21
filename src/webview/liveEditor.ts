@@ -528,6 +528,36 @@ function openLink(el: HTMLElement, e: MouseEvent) {
     : { type: 'open', target: el.getAttribute('data-d-target') ?? '', heading: el.getAttribute('data-d-heading') || undefined, kind: el.getAttribute('data-d-kind') ?? 'wiki', beside: e.altKey });
 }
 
+// ------------------------------------------------------------------ clipboard
+/**
+ * Copy, cut and paste through the extension (vscode.env.clipboard). With nothing
+ * selected, copy and cut take the whole line, like VS Code's editor.
+ */
+function clipboardAction(view: EditorView, action: 'copy' | 'cut' | 'paste') {
+  const { state } = view;
+  if (action === 'paste') {
+    vscode.postMessage({ type: 'clipboardRead' });
+    return;
+  }
+  const ranges = state.selection.ranges;
+  const linewise = ranges.every(r => r.empty);
+  const parts = linewise
+    ? ranges.map(r => state.doc.lineAt(r.head).text + '\n')
+    : ranges.filter(r => !r.empty).map(r => state.sliceDoc(r.from, r.to));
+  vscode.postMessage({ type: 'clipboardWrite', text: parts.join(linewise ? '' : '\n') });
+  if (action === 'cut') {
+    const changes = linewise
+      ? ranges.map(r => { const l = state.doc.lineAt(r.head); return { from: l.from, to: Math.min(l.to + 1, state.doc.length) }; })
+      : ranges.filter(r => !r.empty).map(r => ({ from: r.from, to: r.to }));
+    view.dispatch({ changes, userEvent: 'delete.cut', scrollIntoView: true });
+  }
+}
+
+function pasteText(view: EditorView, text: string) {
+  view.dispatch(view.state.replaceSelection(text.replace(/\r\n?/g, '\n')), { userEvent: 'input.paste', scrollIntoView: true });
+  view.focus();
+}
+
 const events = EditorView.domEventHandlers({
   mousedown(e) {
     const el = (e.target as HTMLElement).closest('.cm-d-link') as HTMLElement | null;
@@ -540,10 +570,19 @@ const events = EditorView.domEventHandlers({
     }
     return false;
   },
-  keydown(e) {
-    // Undo / redo belong to this editor; stop VS Code from also running its own undo.
+  keydown(e, view) {
     const k = e.key.toLowerCase();
-    if ((e.ctrlKey || e.metaKey) && (k === 'z' || k === 'y')) { e.stopPropagation(); }
+    const mod = (e.ctrlKey || e.metaKey) && !e.altKey;
+    // Undo / redo belong to this editor; stop VS Code from also running its own undo.
+    if (mod && (k === 'z' || k === 'y')) { e.stopPropagation(); }
+    // Copy / cut / paste go through VS Code's clipboard: inside a webview the browser's
+    // own clipboard handling is blocked. (Ctrl+Shift+V is the source-view shortcut.)
+    if (mod && !e.shiftKey && (k === 'c' || k === 'x' || k === 'v')) {
+      e.preventDefault();
+      e.stopPropagation();
+      clipboardAction(view, k === 'c' ? 'copy' : k === 'x' ? 'cut' : 'paste');
+      return true;
+    }
     return false;
   },
   focus(_e, view) { setTimeout(() => view.dispatch({ effects: focusEffect.of(true) })); return false; },
@@ -712,8 +751,11 @@ window.addEventListener('message', ev => {
       view?.dispatch({ effects: refresh.of(null) });
       break;
     case 'reveal': reveal(msg.line); break;
+    case 'clipboard': if (view) { clipboardAction(view, msg.action); } break;
+    case 'clipboardText': if (view && typeof msg.text === 'string') { pasteText(view, msg.text); } break;
     case 'probe':
-      // Used by the integration tests: which images are on screen, and did they load?
+      // Used by the integration tests: optionally select text, then report which images are on screen and whether they loaded.
+      if (view && msg.select) { view.dispatch({ selection: { anchor: msg.select[0], head: msg.select[1] } }); view.focus(); }
       vscode.postMessage({ type: 'probeResult', images: [...document.querySelectorAll<HTMLImageElement>('img.cm-d-image')].map(i => ({ alt: i.alt, loaded: i.complete && i.naturalWidth > 0 })) });
       break;
   }

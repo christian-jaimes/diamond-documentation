@@ -43,21 +43,26 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
         vscode.window.showInformationMessage(on ? 'Markdown files now open in the Diamond live editor.' : 'Markdown files now open in the source editor.');
       }),
       provider._onDidChangeActive,
+      // Clipboard for the focused live editor (the keyboard shortcuts are handled inside the editor itself).
+      ...(['copy', 'cut', 'paste'] as const).map(action => vscode.commands.registerCommand(`diamond.live${action[0].toUpperCase()}${action.slice(1)}`, () => {
+        const s = provider.active() as Session | undefined;
+        if (s) { void s.panel.webview.postMessage({ type: 'clipboard', action }); }
+      })),
       // Internal (used by the integration tests): images rendered in the focused live editor.
-      vscode.commands.registerCommand('diamond._probeLiveEditor', () => provider.probe()),
+      vscode.commands.registerCommand('diamond._probeLiveEditor', (select?: [number, number]) => provider.probe(select)),
     );
     return provider;
   }
 
   private probeWaiter: ((images: unknown) => void) | undefined;
 
-  private probe(): Promise<unknown> {
+  private probe(select?: [number, number]): Promise<unknown> {
     const s = this.active() as Session | undefined;
     if (!s) { return Promise.resolve(undefined); }
     return new Promise(resolve => {
       const timer = setTimeout(() => { this.probeWaiter = undefined; resolve(undefined); }, 3000);
       this.probeWaiter = images => { clearTimeout(timer); this.probeWaiter = undefined; resolve(images); };
-      void s.panel.webview.postMessage({ type: 'probe' });
+      void s.panel.webview.postMessage({ type: 'probe', select });
     });
   }
 
@@ -145,7 +150,14 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
             this._onDidChangeActive.fire();
             break;
           case 'command':
-            if (TOOLBAR_COMMANDS.has(msg.id)) { await vscode.commands.executeCommand(msg.id); }
+            // Let pending keystrokes reach the document first (e.g. so switching to the source saves everything).
+            if (TOOLBAR_COMMANDS.has(msg.id)) { await queue; await vscode.commands.executeCommand(msg.id); }
+            break;
+          case 'clipboardWrite':
+            if (typeof msg.text === 'string') { await vscode.env.clipboard.writeText(msg.text); }
+            break;
+          case 'clipboardRead':
+            post({ type: 'clipboardText', text: await vscode.env.clipboard.readText() });
             break;
           case 'probeResult':
             this.probeWaiter?.(msg.images);

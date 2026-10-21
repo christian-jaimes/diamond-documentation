@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.4
+
+- **Fixed:** copy, cut and paste (Ctrl/Cmd+C, X, V) now work in the live editor. With nothing selected, copy and cut take the whole line.
+- Switching between the live editor and the Markdown source saves your changes first, so you are no longer asked "Save changes?".
+
 ## 0.4.3
 
 First public release.
