@@ -88,7 +88,6 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .tb-text { font-weight: 600; font-size: 12px; letter-spacing: .3px; }
 .tb-strike { text-decoration: line-through; font-family: Georgia, serif; font-size: 15px; font-weight: 500; }
 .tb-sep { width: 1px; height: 18px; margin: 0 6px; background: var(--vscode-editorGroup-border, #8884); }
-.tb-spacer { flex: 1; }
 .tb-heading {
   height: 26px; padding: 0 6px; border-radius: 4px; cursor: pointer;
   color: var(--vscode-dropdown-foreground, var(--vscode-foreground));

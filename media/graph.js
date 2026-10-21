@@ -61,7 +61,7 @@
 
   // ------------------------------------------------------------- filtering
   function persist() {
-    vscode.setState({ docs: ui.docs.checked, files: ui.files.checked, ghosts: ui.ghosts.checked, orphans: ui.orphans.checked, labels: ui.labels.checked, legend: ui.legend.checked, local: ui.local.checked, depth: ui.depth.value });
+    vscode.setState({ filtersOpen: document.body.classList.contains('filters-open'), docs: ui.docs.checked, files: ui.files.checked, ghosts: ui.ghosts.checked, orphans: ui.orphans.checked, labels: ui.labels.checked, legend: ui.legend.checked, local: ui.local.checked, depth: ui.depth.value });
   }
 
   function rebuild() {
@@ -285,9 +285,11 @@
     if (!nodes.length) { return; }
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (const n of nodes) { minX = Math.min(minX, n.x); minY = Math.min(minY, n.y); maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y); }
-    const w = canvas.clientWidth, h = canvas.clientHeight - (document.body.classList.contains('compact') ? 40 : 60);
+    // Leave room for the toolbar (taller while the filters are open) and the footer.
+    const top = $('toolbar').offsetHeight + 12;
+    const w = canvas.clientWidth, h = canvas.clientHeight - top - 20;
     const k = Math.min(2.2, 0.9 * Math.min(w / (maxX - minX + 60), h / (maxY - minY + 60)));
-    const x = -(minX + maxX) / 2 * k, y = -(minY + maxY) / 2 * k + (document.body.classList.contains('compact') ? 14 : 20);
+    const x = -(minX + maxX) / 2 * k, y = -(minY + maxY) / 2 * k + (top - 20) / 2;
     view.k += (k - view.k) * ease; view.x += (x - view.x) * ease; view.y += (y - view.y) * ease;
     draw();
   }
@@ -351,7 +353,14 @@
   $('fit').addEventListener('click', () => { needsFit = false; fit(); });
   ui.legend.addEventListener('change', () => { persist(); updateLegend(); });
   $('colors').addEventListener('click', () => vscode.postMessage({ type: 'configureColors' }));
-  $('toggleFilters').addEventListener('click', () => document.body.classList.toggle('filters-open'));
+  // Filters are folded away by default; the view remembers whether they were open.
+  function setFiltersOpen(open) {
+    document.body.classList.toggle('filters-open', open);
+    $('toggleFilters').setAttribute('aria-expanded', String(open));
+    $('toggleFilters').title = open ? 'Hide filters' : 'Show filters';
+  }
+  setFiltersOpen(!!saved.filtersOpen);
+  $('toggleFilters').addEventListener('click', () => { setFiltersOpen(!document.body.classList.contains('filters-open')); persist(); });
 
   // ------------------------------------------------------------- messages
   window.addEventListener('message', ev => {

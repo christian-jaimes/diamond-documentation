@@ -4,6 +4,8 @@
 
 - **Fixed:** copy, cut and paste (Ctrl/Cmd+C, X, V) now work in the live editor. With nothing selected, copy and cut take the whole line.
 - Switching between the live editor and the Markdown source saves your changes first, so you are no longer asked "Save changes?".
+- The graph's filters fold away behind the ☰ button, leaving just a small search box; the node and link counts moved to the bottom-left corner.
+- The live editor toolbar no longer has the Local Graph and MD buttons (use the title-bar icons or Ctrl+Shift+V).
 
 ## 0.4.3
 

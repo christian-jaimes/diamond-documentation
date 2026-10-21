@@ -12,7 +12,7 @@ export interface LiveSelection { line: number; col: number; selWords: number; se
 interface Session { panel: vscode.WebviewPanel; document: vscode.TextDocument; ready: boolean; selection?: LiveSelection; }
 
 /** Commands the live editor toolbar may run. */
-const TOOLBAR_COMMANDS = new Set(['diamond.insertLink', 'diamond.insertCodeBlock', 'diamond.insertTable', 'diamond.openSourceEditor', 'diamond.openLocalGraph', 'diamond.formatTable']);
+const TOOLBAR_COMMANDS = new Set(['diamond.insertLink', 'diamond.insertCodeBlock', 'diamond.insertTable', 'diamond.formatTable']);
 
 /**
  * Editable, formatted view of a Markdown file (a custom text editor backed by

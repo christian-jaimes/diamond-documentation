@@ -2,13 +2,13 @@
 <html><head><meta charset="utf-8">
 <!-- Dev harness: serve the project folder with any static server and open this page
      (add ?compact for the side bar layout) to work on the graph without launching VS Code. -->
-<link rel="stylesheet" href="../media/graph.css">
+<link rel="stylesheet" href="../media/graph.css?v=2">
 <style>body{--vscode-editor-background:#1e1e1e;--vscode-editor-foreground:#ddd;--vscode-focusBorder:#0a84ff;--vscode-editorWidget-background:#252526;--vscode-foreground:#ddd;--vscode-button-secondaryBackground:#3a3d41;--vscode-button-secondaryForeground:#ddd}</style>
 </head>
 <body>
   <div id="toolbar">
     <input id="search" type="search" placeholder="Filter (name, path or #tag)…">
-    <button id="toggleFilters" class="icon">☰</button>
+    <button id="toggleFilters" class="icon" title="Show filters" aria-expanded="false">☰</button>
     <div id="filters">
       <label><input id="local" type="checkbox" checked> Local</label>
       <label id="depthWrap">Depth <input id="depth" type="range" min="1" max="5" value="2"><span id="depthVal">2</span></label>
@@ -26,7 +26,7 @@
   <div id="legend"></div>
   <div id="tooltip"></div>
   <div id="empty" style="display:none"></div>
-  <span id="stats" class="corner"></span>
+  <div id="footer"><span id="stats"></span><span id="help"> · Click: open · Ctrl/Cmd+Click: open beside · Drag: move · Wheel: zoom</span></div>
 <script>
 if (location.search.includes('compact')) { document.body.classList.add('compact'); }
 window.sent = [];

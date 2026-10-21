@@ -91,8 +91,8 @@ function graphHtml(w: vscode.Webview, extUri: vscode.Uri, compact: boolean): str
 <link href="${style}" rel="stylesheet"><title>Graph</title></head>
 <body class="${compact ? 'compact' : ''}">
   <div id="toolbar">
-    <input id="search" type="search" placeholder="Filter (name, path or #tag)…">
-    <button id="toggleFilters" class="icon" title="Filters">☰</button>
+    <input id="search" type="search" placeholder="Search (name, path or #tag)…">
+    <button id="toggleFilters" class="icon" title="Show filters" aria-expanded="false" aria-controls="filters">☰</button>
     <div id="filters">
       <label title="Show only what is within N links of the active file"><input id="local" type="checkbox" checked> Local</label>
       <label id="depthWrap" title="Local graph depth">Depth <input id="depth" type="range" min="1" max="5" value="2"><span id="depthVal">2</span></label>
@@ -104,14 +104,13 @@ function graphHtml(w: vscode.Webview, extUri: vscode.Uri, compact: boolean): str
       <label title="Colour legend from .diamond/graph.yml"><input id="showLegend" type="checkbox"> Legend</label>
       <button id="fit" title="Fit graph to view">Fit</button>
       <button id="colors" title="Edit folder colours (.diamond/graph.yml)">Colours…</button>
-      ${compact ? '' : '<span id="stats"></span>'}
     </div>
   </div>
   <canvas id="graph"></canvas>
   <div id="legend"></div>
   <div id="empty" style="display:none"></div>
   <div id="tooltip"></div>
-  ${compact ? '<span id="stats" class="corner"></span>' : '<div id="help">Click: open · Ctrl/Cmd+Click: open beside · Drag: move · Wheel: zoom</div>'}
+  <div id="footer"><span id="stats"></span>${compact ? '' : '<span id="help"> · Click: open · Ctrl/Cmd+Click: open beside · Drag: move · Wheel: zoom</span>'}</div>
   <script nonce="${n}" src="${script}"></script>
 </body></html>`;
 }

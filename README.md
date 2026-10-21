@@ -24,9 +24,9 @@ Write and navigate project documentation inside VS Code. Notes are plain Markdow
 
 ## Live editor
 
-Markdown files open in the live editor automatically. To see the raw Markdown, click **MD** on the toolbar, the `</>` icon in the title bar, or press **Ctrl+Shift+V**; the file switches in place and stays in source view until you close that tab. Press **Ctrl+Shift+V** again (or the eye icon) to go back. Git diffs always use the normal text diff.
+Markdown files open in the live editor automatically. To see the raw Markdown, click the `</>` icon in the title bar or press **Ctrl+Shift+V**; the file switches in place and stays in source view until you close that tab. Press **Ctrl+Shift+V** again (or the eye icon) to go back. Git diffs always use the normal text diff.
 
-The toolbar has a text-style picker (normal text, headings 1–6), bold, italic, strikethrough, highlight, inline code, bullet / numbered / checkbox lists, quote, link to a file, code block, table, divider, local graph and the source switch. Buttons light up for the formatting under the cursor.
+The toolbar has a text-style picker (normal text, headings 1–6), bold, italic, strikethrough, highlight, inline code, bullet / numbered / checkbox lists, quote, link to a file, code block, table and divider. Buttons light up for the formatting under the cursor.
 
 The live editor edits the same file as the source editor: saving, unsaved-changes markers, Git and undo all keep working, and both views stay in sync if you open them side by side.
 

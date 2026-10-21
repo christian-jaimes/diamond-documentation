@@ -56,10 +56,6 @@ export function createToolbar(host: ToolbarHost, getView: () => EditorView | und
       { id: 'hr', icon: 'horizontal-rule', title: 'Divider', run: v => host.format(v, { op: 'divider' }) },
     ],
   ];
-  const right: Button[] = [
-    { id: 'graph', icon: 'type-hierarchy-sub', title: 'Local graph', run: () => host.command('diamond.openLocalGraph') },
-    { id: 'source', text: 'MD', title: `Show Markdown source (${mod}Shift+V)`, run: () => host.command('diamond.openSourceEditor') },
-  ];
 
   const buttons = new Map<string, HTMLButtonElement>();
   const make = (b: Button) => {
@@ -80,8 +76,6 @@ export function createToolbar(host: ToolbarHost, getView: () => EditorView | und
     const sep = document.createElement('span'); sep.className = 'tb-sep'; bar.appendChild(sep);
     group.forEach(b => bar.appendChild(make(b)));
   }
-  const spacer = document.createElement('span'); spacer.className = 'tb-spacer'; bar.appendChild(spacer);
-  right.forEach(b => bar.appendChild(make(b)));
 
   let lastKey = '';
 
