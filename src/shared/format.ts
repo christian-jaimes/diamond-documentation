@@ -61,16 +61,16 @@ function mapPos(pos: number, changes: Change[]): number {
   return pos + delta;
 }
 
-interface Line { from: number; to: number; text: string; }
+export interface Line { from: number; to: number; text: string; }
 
-function linesOf(text: string): Line[] {
+export function linesOf(text: string): Line[] {
   const out: Line[] = [];
   let from = 0;
   for (const t of text.split('\n')) { out.push({ from, to: from + t.length, text: t }); from += t.length + 1; }
   return out;
 }
 
-function lineIndexAt(lines: Line[], pos: number): number {
+export function lineIndexAt(lines: Line[], pos: number): number {
   let lo = 0, hi = lines.length - 1;
   while (lo < hi) {
     const mid = (lo + hi + 1) >> 1;

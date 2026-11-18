@@ -12,6 +12,7 @@ import link from '@vscode/codicons/src/icons/link.svg';
 import fileCode from '@vscode/codicons/src/icons/file-code.svg';
 import table from '@vscode/codicons/src/icons/table.svg';
 import horizontalRule from '@vscode/codicons/src/icons/horizontal-rule.svg';
+import listTree from '@vscode/codicons/src/icons/list-tree.svg';
 import typeHierarchySub from '@vscode/codicons/src/icons/type-hierarchy-sub.svg';
 import arrow_up from '@vscode/codicons/src/icons/arrow-up.svg';
 import arrow_down from '@vscode/codicons/src/icons/arrow-down.svg';
@@ -27,6 +28,6 @@ import replace_all from '@vscode/codicons/src/icons/replace-all.svg';
 
 export const ICONS: Record<string, string> = {
   bold, italic, 'symbol-color': symbolColor, code, 'list-unordered': listUnordered, 'list-ordered': listOrdered,
-  tasklist, quote, link, 'file-code': fileCode, table, 'horizontal-rule': horizontalRule, 'type-hierarchy-sub': typeHierarchySub,
+  tasklist, quote, link, 'file-code': fileCode, table, 'horizontal-rule': horizontalRule, 'list-tree': listTree, 'type-hierarchy-sub': typeHierarchySub,
   'arrow-up': arrow_up, 'arrow-down': arrow_down, 'case-sensitive': case_sensitive, 'whole-word': whole_word, 'regex': regex, 'chevron-right': chevron_right, 'chevron-down': chevron_down, 'close': close, 'list-selection': list_selection, 'replace': replace, 'replace-all': replace_all,
 };

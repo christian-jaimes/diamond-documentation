@@ -16,6 +16,7 @@ import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
 import type { MarkdownParser } from '@lezer/markdown';
 import * as fmt from '../shared/format';
+import * as md from '../shared/mdTools';
 import { countWords, readableText } from '../shared/stats';
 import { EXTERNAL, IMAGE, splitWikiTarget } from '../parser';
 import { Highlight, Tag, WikiLink } from './markdownExtensions';
@@ -560,9 +561,29 @@ function clipboardAction(view: EditorView, action: 'copy' | 'cut' | 'paste') {
 }
 
 function pasteText(view: EditorView, text: string) {
-  view.dispatch(view.state.replaceSelection(text.replace(/\r\n?/g, '\n')), { userEvent: 'input.paste', scrollIntoView: true });
+  text = text.replace(/\r\n?/g, '\n');
+  // A URL pasted over selected text becomes a link.
+  const link = md.pasteLink(view.state.doc.toString(), view.state.selection.ranges.map(r => ({ anchor: r.anchor, head: r.head })), text);
+  if (link) { applyResult(view, link); return; }
+  view.dispatch(view.state.replaceSelection(text), { userEvent: 'input.paste', scrollIntoView: true });
   view.focus();
 }
+
+/** Keeps ordered lists numbered 1, 2, 3… when items are added, removed or moved. */
+const autoRenumber = EditorState.transactionFilter.of(tr => {
+  if (!tr.docChanged || tr.annotation(External) || !tr.isUserEvent('input') && !tr.isUserEvent('delete') && !tr.isUserEvent('move') && !tr.isUserEvent('undo') && !tr.isUserEvent('redo')) { return tr; }
+  const item = /^\s*\d+[.)]\s/m;
+  let touches = false;
+  tr.changes.iterChanges((fromA, toA, fromB, toB) => {
+    if (touches) { return; }
+    const oldLines = tr.startState.doc.sliceString(tr.startState.doc.lineAt(fromA).from, tr.startState.doc.lineAt(toA).to);
+    const newLines = tr.newDoc.sliceString(tr.newDoc.lineAt(fromB).from, tr.newDoc.lineAt(toB).to);
+    touches = item.test(oldLines) || item.test(newLines);
+  });
+  if (!touches) { return tr; }
+  const fix = md.renumberLists(tr.newDoc.toString());
+  return fix ? [tr, { changes: fix.changes.map(c => ({ from: c.from, to: c.to, insert: c.insert })), sequential: true }] : tr;
+});
 
 const events = EditorView.domEventHandlers({
   mousedown(e) {
@@ -640,11 +661,21 @@ function applyResult(view: EditorView, r: fmt.EditResult | undefined) {
   if (!r) { return; }
   view.dispatch({
     changes: r.changes,
-    selection: EditorSelection.create(r.selections.map(s => EditorSelection.range(s.anchor, s.head))),
+    selection: r.selections.length ? EditorSelection.create(r.selections.map(s => EditorSelection.range(s.anchor, s.head))) : undefined,
     userEvent: 'input.format',
     scrollIntoView: true,
   });
   view.focus();
+}
+
+/** Tab / Shift+Tab inside a table moves between cells (adding a row after the last one). */
+function tableTab(view: EditorView, forward: boolean): boolean {
+  const { main } = view.state.selection;
+  if (view.state.selection.ranges.length > 1 || view.state.doc.lineAt(main.from).number !== view.state.doc.lineAt(main.to).number) { return false; }
+  const r = md.tableNavigate(view.state.doc.toString(), main.head, forward);
+  if (!r) { return false; }
+  applyResult(view, r);
+  return true;
 }
 
 function handleFormat(view: EditorView, msg: any) {
@@ -658,6 +689,7 @@ function handleFormat(view: EditorView, msg: any) {
     case 'codeBlock': return applyResult(view, fmt.codeBlock(text, sels, msg.lang));
     case 'insert': return applyResult(view, fmt.insertText(sels, msg.text, msg.selFrom, msg.selTo));
     case 'formatTable': return applyResult(view, fmt.formatTable(text, sels[0].head));
+    case 'toc': return applyResult(view, md.updateToc(text, sels[0].head));
     case 'divider': return applyResult(view, fmt.divider(text, sels));
     case 'link': {
       const main = state.selection.main;
@@ -717,6 +749,8 @@ function createEditor(text: string, settings: { toolbar?: boolean; minimap?: unk
     diagnosticsSupport(msg => vscode.postMessage(msg)),
     minimapSupport(settings.minimap),
     keymap.of([
+      { key: 'Tab', run: v => tableTab(v, true) },
+      { key: 'Shift-Tab', run: v => tableTab(v, false) },
       { key: 'Enter', run: insertNewlineContinueMarkup },
       { key: 'Backspace', run: deleteMarkupBackward },
       indentWithTab,
@@ -727,6 +761,7 @@ function createEditor(text: string, settings: { toolbar?: boolean; minimap?: unk
     tableField,
     events,
     syncOut,
+    autoRenumber,
     reportSelection,
     theme,
   ];

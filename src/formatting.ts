@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fmt from './shared/format';
+import * as md from './shared/mdTools';
 import type { LinkIndex } from './linkIndex';
 
 /** A format request sent to the live editor webview (see src/webview/liveEditor.ts). */
@@ -9,10 +10,13 @@ export type FormatMessage =
   | { op: 'codeBlock'; lang: string }
   | { op: 'insert'; text: string; selFrom: number; selTo: number }
   | { op: 'link'; target: string }
-  | { op: 'formatTable' };
+  | { op: 'formatTable' }
+  | { op: 'toc' };
 
 /** Implemented by the live editor provider: forwards a request to the focused live editor, if any. */
-export interface LiveTarget { format(msg: FormatMessage): boolean; }
+export interface LiveTarget {
+  format(msg: FormatMessage): boolean;
+}
 
 /** Run an editor-agnostic edit against the active text editor. */
 async function applyToTextEditor(fn: (text: string, sels: fmt.Sel[]) => fmt.EditResult | undefined) {
@@ -25,7 +29,7 @@ async function applyToTextEditor(fn: (text: string, sels: fmt.Sel[]) => fmt.Edit
   await editor.edit(e => {
     for (const c of result.changes) { e.replace(new vscode.Range(doc.positionAt(c.from), doc.positionAt(c.to)), c.insert); }
   });
-  editor.selections = result.selections.map(s => new vscode.Selection(doc.positionAt(s.anchor), doc.positionAt(s.head)));
+  if (result.selections.length) { editor.selections = result.selections.map(s => new vscode.Selection(doc.positionAt(s.anchor), doc.positionAt(s.head))); }
   editor.revealRange(editor.selection);
 }
 
@@ -57,6 +61,17 @@ async function onEnter() {
   editor.revealRange(editor.selection);
 }
 
+/** Tab / Shift+Tab in the source editor: move between table cells, otherwise behave as usual. */
+async function tableTab(forward: boolean) {
+  const editor = vscode.window.activeTextEditor;
+  const fallback = () => vscode.commands.executeCommand(forward ? 'tab' : 'outdent');
+  if (!editor || editor.selections.length !== 1 || editor.selection.start.line !== editor.selection.end.line) { return fallback(); }
+  const doc = editor.document;
+  const result = md.tableNavigate(doc.getText(), doc.offsetAt(editor.selection.active), forward);
+  if (!result) { return fallback(); }
+  await applyToTextEditor(() => result);
+}
+
 const CODE_LANGUAGES = ['', 'ts', 'js', 'tsx', 'python', 'bash', 'powershell', 'json', 'yaml', 'sql', 'csharp', 'java', 'go', 'rust', 'html', 'css', 'xml', 'mermaid'];
 
 export function registerFormatting(ctx: vscode.ExtensionContext, live: LiveTarget, index: LinkIndex) {
@@ -80,6 +95,19 @@ export function registerFormatting(ctx: vscode.ExtensionContext, live: LiveTarge
   reg('diamond.toggleQuote', line('quote'));
   reg('diamond.formatTable', () => run({ op: 'formatTable' }, (t, s) => fmt.formatTable(t, s[0]?.head ?? 0)));
   reg('diamond.onEnter', onEnter);
+  reg('diamond.updateToc', () => run({ op: 'toc' }, (t, s) => md.updateToc(t, s[0]?.head ?? 0)));
+  reg('diamond.tableNextCell', () => tableTab(true));
+  reg('diamond.tablePreviousCell', () => tableTab(false));
+
+  // Keep a table of contents (between <!-- toc --> markers) current when the note is saved.
+  ctx.subscriptions.push(vscode.workspace.onWillSaveTextDocument(e => {
+    if (e.document.languageId !== 'markdown' || !vscode.workspace.getConfiguration('diamond.toc').get('updateOnSave', true)) { return; }
+    const text = e.document.getText();
+    if (!text.includes(md.TOC_START) || !text.includes(md.TOC_END)) { return; }
+    const r = md.updateToc(text, 0);
+    if (!r) { return; }
+    e.waitUntil(Promise.resolve(r.changes.map(c => vscode.TextEdit.replace(new vscode.Range(e.document.positionAt(c.from), e.document.positionAt(c.to)), c.insert))));
+  }));
 
   reg('diamond.insertCodeBlock', async () => {
     const pick = await vscode.window.showQuickPick(CODE_LANGUAGES.map(l => ({ label: l || '(none)', value: l })), { placeHolder: 'Code block language' });

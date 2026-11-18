@@ -54,6 +54,7 @@ export function createToolbar(host: ToolbarHost, getView: () => EditorView | und
       { id: 'codeblock', icon: 'file-code', title: `Code block (${mod}Shift+K)`, run: () => host.command('diamond.insertCodeBlock') },
       { id: 'table', icon: 'table', title: 'Insert table', run: () => host.command('diamond.insertTable') },
       { id: 'hr', icon: 'horizontal-rule', title: 'Divider', run: v => host.format(v, { op: 'divider' }) },
+      { id: 'toc', icon: 'list-tree', title: 'Insert / update table of contents', run: v => host.format(v, { op: 'toc' }) },
     ],
   ];
 

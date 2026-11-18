@@ -123,6 +123,11 @@
         "category": "Diamond"
       },
       {
+        "command": "diamond.updateToc",
+        "title": "Insert / Update Table of Contents",
+        "category": "Diamond"
+      },
+      {
         "command": "diamond.insertLink",
         "title": "Insert Link to File…",
         "category": "Diamond"
@@ -172,6 +177,16 @@
         "title": "Refresh Backlinks",
         "category": "Diamond",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "diamond.tableNextCell",
+        "title": "Next Table Cell",
+        "category": "Diamond"
+      },
+      {
+        "command": "diamond.tablePreviousCell",
+        "title": "Previous Table Cell",
+        "category": "Diamond"
       }
     ],
     "keybindings": [
@@ -262,6 +277,16 @@
         "command": "diamond.onEnter",
         "key": "enter",
         "when": "editorTextFocus && editorLangId == markdown && !suggestWidgetVisible && !editorHasMultipleSelections && !inlineSuggestionVisible && config.diamond.listContinuation"
+      },
+      {
+        "command": "diamond.tableNextCell",
+        "key": "tab",
+        "when": "editorTextFocus && editorLangId == markdown && !suggestWidgetVisible && !inSnippetMode && !editorTabMovesFocus && !editorReadonly && !editorHasMultipleSelections && !inlineSuggestionVisible"
+      },
+      {
+        "command": "diamond.tablePreviousCell",
+        "key": "shift+tab",
+        "when": "editorTextFocus && editorLangId == markdown && !suggestWidgetVisible && !inSnippetMode && !editorTabMovesFocus && !editorReadonly && !editorHasMultipleSelections && !inlineSuggestionVisible"
       }
     ],
     "viewsContainers": {
@@ -443,6 +468,11 @@
           "type": "string",
           "default": "",
           "description": "Font family of the live editor (empty = VS Code UI font)."
+        },
+        "diamond.toc.updateOnSave": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Refresh the table of contents between `<!-- toc -->` and `<!-- /toc -->` whenever the note is saved. Run **Diamond: Insert / Update Table of Contents** to add one."
         }
       }
     }
