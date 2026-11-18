@@ -30,6 +30,8 @@ The toolbar has a text-style picker (normal text, headings 1–6), bold, italic,
 
 **Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
 
+**Minimap.** The live editor has a minimap on the right edge, like VS Code's code view: hover for the viewport slider, drag it or click anywhere to jump, and see search matches, the selection and diagnostics marked. It follows your `editor.minimap.*` settings (`enabled`, `side`, `renderCharacters`, `maxColumn`, `showSlider`, `size`, `scale`); to turn it off for notes only, set `"[markdown]": { "editor.minimap.enabled": false }`.
+
 **Spell checking and other diagnostics.** If you have the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extension, its misspelled words get a wavy underline in the live editor too. Hover a word for the message and a **Quick Fix** list (suggested spellings, add to dictionary, ignore…); click one to apply it. Spell checking requires that extension; without it nothing is underlined and nothing breaks. Set `diamond.liveEditor.diagnostics` to `all` to also show other diagnostics (linters, etc.) or `off` to hide them.
 
 The live editor edits the same file as the source editor: saving, unsaved-changes markers, Git and undo all keep working, and both views stay in sync if you open them side by side.

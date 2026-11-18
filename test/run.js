@@ -45,6 +45,33 @@ assert.deepStrictEqual(wc.rankFiles(files, 'gtst').map(r => r.entry.text), ['Get
 assert.deepStrictEqual(wc.rankFiles(files, 'database').map(r => r.entry.text), ['schema.sql']); // matches by path
 assert.strictEqual(wc.rankFiles(files, '').length, 4);
 
+// Minimap settings and geometry
+const mm = require('../out/shared/minimap');
+assert.deepStrictEqual(mm.normalizeMinimap(undefined), mm.MINIMAP_DEFAULTS);
+assert.deepStrictEqual(mm.normalizeMinimap({ side: 'left', maxColumn: 80, scale: 9, showSlider: 'x', enabled: false }),
+  { enabled: false, side: 'left', renderCharacters: true, maxColumn: 80, showSlider: 'mouseover', size: 'proportional', scale: 3 });
+assert.strictEqual(mm.minimapRatio('proportional', 1, 20, 800, 5000), 0.1); // one 2px row per 20px line
+assert.strictEqual(mm.minimapRatio('fill', 1, 20, 800, 2000), 0.4);
+assert.strictEqual(mm.minimapRatio('fit', 1, 20, 800, 20000), 0.04);
+assert.strictEqual(mm.minimapRatio('fit', 1, 20, 800, 2000), 0.1);
+{
+  // Short document: the minimap shows all of it and the slider moves at the minimap's own scale.
+  let g = mm.minimapGeometry(100, 800, 2000, 0.1);
+  assert.deepStrictEqual([g.offset, g.sliderTop, g.sliderH, g.maxScroll], [0, 10, 80, 1200]);
+  assert.strictEqual(mm.scrollForSliderTop(10, g, 800), 100);
+  // Tall document: the minimap content scrolls with the editor; slider spans [0, viewH - sliderH].
+  g = mm.minimapGeometry(0, 800, 20000, 0.1);
+  assert.deepStrictEqual([g.offset, g.sliderTop], [0, 0]);
+  g = mm.minimapGeometry(19200, 800, 20000, 0.1);
+  assert.deepStrictEqual([g.offset, g.sliderTop, g.sliderH], [1200, 720, 80]);
+  for (const st of [0, 5000, 12345, 19200]) {
+    const t = mm.minimapGeometry(st, 800, 20000, 0.1);
+    assert.ok(Math.abs(mm.scrollForSliderTop(t.sliderTop, t, 800) - st) < 1e-6);
+  }
+  assert.strictEqual(mm.scrollForSliderTop(-50, g, 800), 0);
+  assert.strictEqual(mm.scrollForSliderTop(5000, g, 800), 19200);
+}
+
 // Graph node labels
 const nl = require('../out/shared/nodeLabel');
 assert.strictEqual(nl.nodeLabel('title', { path: 'guides/setup.md', isMarkdown: true, heading: 'Setting up' }), 'Setting up');

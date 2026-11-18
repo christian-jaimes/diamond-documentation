@@ -100,7 +100,7 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-d-table-wrap .cm-d-image { max-height: 120px; vertical-align: middle; }
 
 /* Find / replace: modelled on VS Code's own find widget (see src/webview/findWidget.ts) */
-.cm-editor .cm-panels.cm-panels-top { position: absolute; top: 0; right: 14px; left: auto; width: auto; z-index: 300; pointer-events: none; background: transparent; border: 0; }
+.cm-editor .cm-panels.cm-panels-top { position: absolute; top: 0; right: calc(14px + var(--diamond-minimap-inset, 0px)); left: auto; width: auto; z-index: 300; pointer-events: none; background: transparent; border: 0; }
 .cm-find-widget {
   pointer-events: auto; box-sizing: border-box; width: 419px; max-width: calc(100vw - 40px);
   display: flex; align-items: flex-start; gap: 2px; padding: 4px 4px 4px 0; margin-right: 0;
@@ -180,3 +180,14 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-d-diag-head { padding: 2px 10px; opacity: 0.6; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
 .cm-d-diag-fix { display: block; width: 100%; text-align: left; padding: 2px 10px; background: none; border: 0; color: var(--vscode-textLink-foreground); font: inherit; cursor: pointer; }
 .cm-d-diag-fix:hover { background: var(--vscode-list-hoverBackground); color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground)); }
+
+/* Minimap (src/webview/minimap.ts): sits beside the scrollbar, like VS Code's */
+.cm-d-minimap { position: absolute; top: 0; bottom: 0; z-index: 5; background: var(--vscode-minimap-background, transparent); touch-action: none; user-select: none; cursor: default; }
+.cm-d-minimap-canvas { position: absolute; top: 0; left: 0; display: block; }
+.cm-d-minimap-slider {
+  position: absolute; left: 0; width: 100%; box-sizing: border-box; opacity: 0; transition: opacity 100ms linear;
+  background: var(--vscode-minimapSlider-background, rgba(121, 121, 121, 0.2));
+}
+.cm-d-minimap:hover .cm-d-minimap-slider, .cm-d-minimap-always .cm-d-minimap-slider, .cm-d-minimap-active .cm-d-minimap-slider { opacity: 1; }
+.cm-d-minimap-slider:hover { background: var(--vscode-minimapSlider-hoverBackground, rgba(100, 100, 100, 0.35)); }
+.cm-d-minimap-active .cm-d-minimap-slider { background: var(--vscode-minimapSlider-activeBackground, rgba(191, 191, 191, 0.2)); }

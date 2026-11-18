@@ -124,6 +124,14 @@ const hover = hoverTooltip(async (view, pos): Promise<Tooltip | null> => {
   };
 }, { hideOnChange: true, hoverTime: 250 });
 
+/** Underlined ranges (document offsets, ascending) with their severity index: 0 error … 3 hint. */
+export function diagnosticMarks(state: EditorState): { from: number; to: number; severity: number }[] {
+  const out: { from: number; to: number; severity: number }[] = [];
+  const cursor = state.field(diagnosticField).iter();
+  for (; cursor.value; cursor.next()) { out.push({ from: cursor.from, to: cursor.to, severity: Math.max(0, Math.min(3, cursor.value.spec.diag.severity)) }); }
+  return out;
+}
+
 export function diagnosticsSupport(send: Post) {
   post = send;
   return [diagnosticField, hover];
