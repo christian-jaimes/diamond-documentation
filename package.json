@@ -361,6 +361,19 @@
           "default": true,
           "description": "Show notes without any links in the graph by default."
         },
+        "diamond.graph.nodeLabel": {
+          "type": "string",
+          "enum": [
+            "title",
+            "fileName"
+          ],
+          "enumDescriptions": [
+            "The note's first # heading. Without one (and for other file types), the parent folder and file name, such as guides/setup.",
+            "Just the file name."
+          ],
+          "default": "title",
+          "description": "How nodes are named in the graph. The full path always shows when you hover a node."
+        },
         "diamond.listContinuation": {
           "type": "boolean",
           "default": true,

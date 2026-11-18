@@ -23,6 +23,24 @@ assert.deepStrictEqual(n.tags, ['todo']);
 assert.deepStrictEqual(splitWikiTarget('a/b#c|d'), { target: 'a/b', heading: 'c', alias: 'd', aliasOffset: 6 });
 assert.strictEqual(slugify('Install & Run!'), 'install--run');
 
+// Graph node labels
+const nl = require('../out/shared/nodeLabel');
+assert.strictEqual(nl.nodeLabel('title', { path: 'guides/setup.md', isMarkdown: true, heading: 'Setting up' }), 'Setting up');
+assert.strictEqual(nl.nodeLabel('title', { path: 'guides/setup.md', isMarkdown: true }), 'guides/setup');
+assert.strictEqual(nl.nodeLabel('title', { path: 'a/b/guides/setup.md', isMarkdown: true }), 'guides/setup');
+assert.strictEqual(nl.nodeLabel('title', { path: 'README.md', isMarkdown: true }), 'README');
+assert.strictEqual(nl.nodeLabel('title', { path: 'img/logo.png', isMarkdown: false, heading: 'ignored' }), 'img/logo.png');
+assert.strictEqual(nl.nodeLabel('title', { path: 'x.sql', isMarkdown: false }), 'x.sql');
+assert.strictEqual(nl.nodeLabel('title', { path: 'a/b.md', isMarkdown: true, heading: '  **`  `**  ' }), 'a/b');
+assert.strictEqual(nl.nodeLabel('title', { path: 'a/b.md', isMarkdown: true, heading: 'The *[[API]]* and [docs](x.md)' }), 'The API and docs');
+assert.strictEqual(nl.nodeLabel('fileName', { path: 'guides/setup.md', isMarkdown: true, heading: 'Setting up' }), 'setup');
+assert.strictEqual(nl.nodeLabel('fileName', { path: 'img/logo.png', isMarkdown: false }), 'logo.png');
+assert.strictEqual(nl.parseNodeLabelMode('fileName'), 'fileName');
+assert.strictEqual(nl.parseNodeLabelMode('bogus'), 'title');
+assert.strictEqual(nl.parseNodeLabelMode(undefined), 'title');
+// The first level-1 heading (after front matter) is what titles come from.
+assert.strictEqual(parseNote('---\n# not this\n---\n## Sub\n# Real title\n').headings.find(h => h.level === 1).text, 'Real title');
+
 // Preview plugin with a fake vscode + index
 const fakeUri = p => ({ path: p, fsPath: p, scheme: 'file', toString: () => 'file://' + p });
 const origLoad = Module._load;

@@ -87,6 +87,7 @@ Table insert, table format and blockquote are in the Command Palette under **Dia
 | `diamond.exclude` | `**/{node_modules,.git}/**` | Files that cannot be linked and are not indexed |
 | `diamond.newNoteFolder` | *(empty)* | Where notes created from unresolved links go (empty = next to the current note) |
 | `diamond.graph.showFiles` / `showOrphans` | `true` | Default graph filters |
+| `diamond.graph.nodeLabel` | `title` | How graph nodes are named: `title` (the note's first `#` heading, or parent folder + file name such as `guides/setup` when it has none or is not Markdown) or `fileName` (just the file name). Hover a node for its full path. |
 | `diamond.liveEditor.readableLineLength` / `fontSize` / `fontFamily` | | Live editor appearance |
 | `diamond.listContinuation` | `true` | Enter continues lists in the source editor |
 
