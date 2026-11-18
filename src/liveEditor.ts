@@ -3,13 +3,14 @@ import { LinkIndex } from './linkIndex';
 import { openLink } from './linkFeatures';
 import { IMAGE } from './parser';
 import { nonce } from './webviewUtil';
+import { QuickFixes, collectDiagnostics, diagnosticsMode } from './diagnostics';
 import type { FormatMessage, LiveTarget } from './formatting';
 
 /** An edit from the webview, as line/column positions (identical for "\n" and "\r\n" files). */
 interface LineChange { fl: number; fc: number; tl: number; tc: number; insert: string; }
 
 export interface LiveSelection { line: number; col: number; selWords: number; selChars: number; }
-interface Session { panel: vscode.WebviewPanel; document: vscode.TextDocument; ready: boolean; selection?: LiveSelection; }
+interface Session { panel: vscode.WebviewPanel; document: vscode.TextDocument; ready: boolean; selection?: LiveSelection; shown?: number; }
 
 /** Commands the live editor toolbar may run. */
 const TOOLBAR_COMMANDS = new Set(['diamond.insertLink', 'diamond.insertCodeBlock', 'diamond.insertTable', 'diamond.formatTable']);
@@ -48,6 +49,13 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
         const s = provider.active() as Session | undefined;
         if (s) { void s.panel.webview.postMessage({ type: 'clipboard', action }); }
       })),
+      vscode.commands.registerCommand('diamond.liveEditorDiagnosticsInfo', () => {
+        const s = provider.active() as Session | undefined;
+        if (!s) { vscode.window.showInformationMessage('Open a file in the Diamond live editor first.'); return; }
+        const all = vscode.languages.getDiagnostics(s.document.uri);
+        const sources = [...new Set(all.map(d => d.source ?? '(none)'))].join(', ') || 'none';
+        vscode.window.showInformationMessage(`Diamond: ${all.length} diagnostics reported for this file (sources: ${sources}); ${collectDiagnostics(s.document.uri, diagnosticsMode()).length} match the "${diagnosticsMode()}" filter; ${s.shown ?? 'no reply from the live editor'} underlined.`);
+      }),
       // Internal (used by the integration tests): images rendered in the focused live editor.
       vscode.commands.registerCommand('diamond._probeLiveEditor', (select?: [number, number]) => provider.probe(select)),
     );
@@ -124,6 +132,9 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
       if (document.version !== before + 1) { sendText('update'); }
     };
 
+    const quickFixes = new QuickFixes();
+    const sendDiagnostics = () => { if (session.ready) { post({ type: 'diagnostics', items: collectDiagnostics(document.uri, diagnosticsMode()) }); } };
+
     const settings = () => {
       const c = vscode.workspace.getConfiguration('diamond.liveEditor');
       return { toolbar: c.get('toolbar', true), autoCloseBrackets: c.get('autoCloseBrackets', true), readableLineLength: c.get('readableLineLength', true), fontSize: c.get<number>('fontSize') || undefined, fontFamily: c.get<string>('fontFamily') || undefined };
@@ -137,6 +148,7 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
             const reveal = this.pendingReveals.get(key);
             this.pendingReveals.delete(key);
             sendText('init', { settings: settings(), reveal });
+            sendDiagnostics();
             break;
           }
           case 'edit':
@@ -152,6 +164,18 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
           case 'command':
             // Let pending keystrokes reach the document first (e.g. so switching to the source saves everything).
             if (TOOLBAR_COMMANDS.has(msg.id)) { await queue; await vscode.commands.executeCommand(msg.id); }
+            break;
+          case 'quickFixes': {
+            const r = new vscode.Range(msg.sl, msg.sc, msg.el, msg.ec);
+            post({ type: 'quickFixes', id: msg.id, actions: await quickFixes.list(document.uri, r, msg.id) });
+            break;
+          }
+          case 'diagnosticsShown':
+            session.shown = msg.count;
+            break;
+          case 'applyQuickFix':
+            await queue;
+            await quickFixes.run(msg.id, msg.index);
             break;
           case 'clipboardWrite':
             if (typeof msg.text === 'string') { await vscode.env.clipboard.writeText(msg.text); }
@@ -197,8 +221,11 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
       // Link targets only resolve differently when files come or go.
       this.index.onDidChangeFiles(() => post({ type: 'invalidate' })),
       panel.onDidChangeViewState(() => this._onDidChangeActive.fire()),
+      vscode.languages.onDidChangeDiagnostics(e => {
+        if (e.uris.some(u => u.toString() === key)) { sendDiagnostics(); }
+      }),
       vscode.workspace.onDidChangeConfiguration(e => {
-        if (e.affectsConfiguration('diamond.liveEditor')) { sendText('init', { settings: settings() }); }
+        if (e.affectsConfiguration('diamond.liveEditor')) { sendText('init', { settings: settings() }); sendDiagnostics(); }
       }),
     ];
 

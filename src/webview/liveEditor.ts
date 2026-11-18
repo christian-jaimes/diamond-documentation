@@ -9,6 +9,7 @@ import { HighlightStyle, Language, LanguageSupport, indentUnit, syntaxHighlighti
 import { searchKeymap } from '@codemirror/search';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { handleLinkMessage, linkCompletion, prefetchLinkFiles } from './linkComplete';
+import { diagnosticsSupport, handleDiagnosticMessage } from './diagnostics';
 import { findKeymap, findWidget } from './findWidget';
 import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
@@ -712,6 +713,7 @@ function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrac
       keymap.of(closeBracketsKeymap),
     ]),
     linkCompletion(msg => vscode.postMessage(msg)),
+    diagnosticsSupport(msg => vscode.postMessage(msg)),
     keymap.of([
       { key: 'Enter', run: insertNewlineContinueMarkup },
       { key: 'Backspace', run: deleteMarkupBackward },
@@ -741,7 +743,7 @@ function reveal(lineNo: number) {
 
 window.addEventListener('message', ev => {
   const msg = ev.data;
-  if (handleLinkMessage(msg)) { return; }
+  if (handleLinkMessage(msg) || handleDiagnosticMessage(view, msg)) { return; }
   switch (msg.type) {
     case 'init':
       seq = msg.seq;

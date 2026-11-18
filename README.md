@@ -30,6 +30,8 @@ The toolbar has a text-style picker (normal text, headings 1–6), bold, italic,
 
 **Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
 
+**Spell checking and other diagnostics.** If you have the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extension, its misspelled words get a wavy underline in the live editor too. Hover a word for the message and a **Quick Fix** list (suggested spellings, add to dictionary, ignore…); click one to apply it. Spell checking requires that extension; without it nothing is underlined and nothing breaks. Set `diamond.liveEditor.diagnostics` to `all` to also show other diagnostics (linters, etc.) or `off` to hide them.
+
 The live editor edits the same file as the source editor: saving, unsaved-changes markers, Git and undo all keep working, and both views stay in sync if you open them side by side.
 
 To open Markdown in the source editor by default instead, turn off `diamond.liveEditor.openByDefault` (or run **Diamond: Toggle Opening Markdown in the Live Editor**).
@@ -86,6 +88,7 @@ Table insert, table format and blockquote are in the Command Palette under **Dia
 | `diamond.liveEditor.openByDefault` | `true` | Open Markdown in the live editor |
 | `diamond.liveEditor.toolbar` | `true` | Show the formatting toolbar |
 | `diamond.liveEditor.autoCloseBrackets` | `true` | Auto-close `(`, `[`, `{` and `"` in the live editor |
+| `diamond.liveEditor.diagnostics` | `spelling` | Underline diagnostics in the live editor: `spelling` (Code Spell Checker), `all`, or `off` |
 | `diamond.statusBar.enabled` | `true` | Show word / character / link counts in the status bar |
 | `diamond.exclude` | `**/{node_modules,.git}/**` | Files that cannot be linked and are not indexed |
 | `diamond.newNoteFolder` | *(empty)* | Where notes created from unresolved links go (empty = next to the current note) |

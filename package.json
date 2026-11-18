@@ -53,6 +53,11 @@
     ],
     "commands": [
       {
+        "command": "diamond.liveEditorDiagnosticsInfo",
+        "title": "Show Live Editor Diagnostics Info",
+        "category": "Diamond"
+      },
+      {
         "command": "diamond.toggleBold",
         "title": "Toggle Bold",
         "category": "Diamond"
@@ -413,6 +418,21 @@
           "type": "boolean",
           "default": true,
           "description": "Limit the live editor to a comfortable reading width."
+        },
+        "diamond.liveEditor.diagnostics": {
+          "type": "string",
+          "enum": [
+            "spelling",
+            "all",
+            "off"
+          ],
+          "enumDescriptions": [
+            "Underline spelling problems reported by a spell checker such as Code Spell Checker.",
+            "Underline every diagnostic other extensions report for the file (spelling, linters, …).",
+            "Don't show diagnostics in the live editor."
+          ],
+          "default": "spelling",
+          "description": "Which diagnostics (squiggles, with hover and quick fixes) the live editor shows. Spell checking needs the Code Spell Checker extension."
         },
         "diamond.liveEditor.fontSize": {
           "type": "number",
