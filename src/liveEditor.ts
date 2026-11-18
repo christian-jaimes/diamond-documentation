@@ -5,6 +5,7 @@ import { IMAGE } from './parser';
 import { nonce } from './webviewUtil';
 import { QuickFixes, collectDiagnostics, diagnosticsMode } from './diagnostics';
 import type { FormatMessage, LiveTarget } from './formatting';
+import { normalizeMinimap } from './shared/minimap';
 
 /** An edit from the webview, as line/column positions (identical for "\n" and "\r\n" files). */
 interface LineChange { fl: number; fc: number; tl: number; tc: number; insert: string; }
@@ -135,9 +136,18 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
     const quickFixes = new QuickFixes();
     const sendDiagnostics = () => { if (session.ready) { post({ type: 'diagnostics', items: collectDiagnostics(document.uri, diagnosticsMode()) }); } };
 
+    // The editor's own minimap settings (the `[markdown]` overrides apply), so the live editor's minimap behaves like the source view's.
+    const minimapSettings = () => {
+      const c = vscode.workspace.getConfiguration('editor', { uri: document.uri, languageId: 'markdown' });
+      return normalizeMinimap({
+        enabled: c.get('minimap.enabled'), side: c.get('minimap.side'), renderCharacters: c.get('minimap.renderCharacters'), maxColumn: c.get('minimap.maxColumn'),
+        showSlider: c.get('minimap.showSlider'), size: c.get('minimap.size'), scale: c.get('minimap.scale'),
+      });
+    };
+
     const settings = () => {
       const c = vscode.workspace.getConfiguration('diamond.liveEditor');
-      return { toolbar: c.get('toolbar', true), autoCloseBrackets: c.get('autoCloseBrackets', true), readableLineLength: c.get('readableLineLength', true), fontSize: c.get<number>('fontSize') || undefined, fontFamily: c.get<string>('fontFamily') || undefined };
+      return { minimap: minimapSettings(), toolbar: c.get('toolbar', true), autoCloseBrackets: c.get('autoCloseBrackets', true), readableLineLength: c.get('readableLineLength', true), fontSize: c.get<number>('fontSize') || undefined, fontFamily: c.get<string>('fontFamily') || undefined };
     };
 
     const disposables: vscode.Disposable[] = [
@@ -225,6 +235,7 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
         if (e.uris.some(u => u.toString() === key)) { sendDiagnostics(); }
       }),
       vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration('editor.minimap', { uri: document.uri, languageId: 'markdown' })) { post({ type: 'minimap', minimap: minimapSettings() }); }
         if (e.affectsConfiguration('diamond.liveEditor')) { sendText('init', { settings: settings() }); sendDiagnostics(); }
       }),
     ];
