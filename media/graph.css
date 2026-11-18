@@ -49,7 +49,7 @@ body.compact #search { flex: 1 1 auto; width: auto; }
 }
 #tooltip {
   position: fixed; display: none; pointer-events: none; z-index: 3;
-  padding: 3px 7px; border-radius: 3px; white-space: nowrap;
+  padding: 3px 7px; border-radius: 3px; white-space: pre;
   background: var(--vscode-editorHoverWidget-background);
   border: 1px solid var(--vscode-editorHoverWidget-border);
   color: var(--vscode-editorHoverWidget-foreground);

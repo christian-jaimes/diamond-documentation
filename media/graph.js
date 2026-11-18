@@ -254,14 +254,32 @@
       ctx.font = `${fontSize}px ${colors.font}`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.fillStyle = colors.fg;
+      // Most important labels first; a label that would overlap one already placed is skipped.
+      const candidates = [];
       for (const n of nodes) {
         const show = n === active || (near && near.has(n)) || n.data.id === focusId || view.k > 0.9 || n.degree > 6 / view.k;
-        if (!show) { continue; }
+        if (show) { candidates.push(n); }
+      }
+      const rank = (n) => (n === active ? 3 : n.data.id === focusId ? 2 : near && near.has(n) ? 1 : 0);
+      candidates.sort((a, b) => rank(b) - rank(a) || b.degree - a.degree);
+      const placed = [];
+      for (const n of candidates) {
+        const text = shortLabel(n.data.label);
+        const tw = ctx.measureText(text).width, x = n.x - tw / 2, y = n.y + n.r + 2;
+        const pad = 2 / view.k;
+        if (rank(n) < 2 && placed.some(p => x < p.x + p.w + pad && x + tw + pad > p.x && y < p.y + p.h + pad && y + fontSize + pad > p.y)) { continue; }
+        placed.push({ x, y, w: tw, h: fontSize });
         ctx.globalAlpha = lit(n) ? 0.95 : 0.15;
-        ctx.fillText(n.data.label, n.x, n.y + n.r + 2);
+        ctx.fillText(text, n.x, y);
       }
     }
     ctx.restore();
+  }
+
+  const MAX_LABEL = 28;
+  /** Long labels are cut short on the canvas; the tooltip has the full text. */
+  function shortLabel(label) {
+    return label.length <= MAX_LABEL ? label : label.slice(0, MAX_LABEL - 1).trimEnd() + '…';
   }
 
   /** Arrowhead at the target end of a link, so outgoing links and backlinks can be told apart. */
@@ -324,7 +342,7 @@
     const n = nodeAt(toWorld(e));
     if (n !== hover) { hover = n; canvas.style.cursor = n ? 'pointer' : 'default'; draw(); }
     if (n) {
-      tooltip.textContent = n.data.path + (n.data.tags.length ? '  ' + n.data.tags.map(t => '#' + t).join(' ') : '');
+      tooltip.textContent = (n.data.label !== n.data.path ? n.data.label + '\n' : '') + n.data.path + (n.data.tags.length ? '  ' + n.data.tags.map(t => '#' + t).join(' ') : '');
       tooltip.style.display = 'block'; tooltip.style.left = e.clientX + 12 + 'px'; tooltip.style.top = e.clientY + 12 + 'px';
     } else { tooltip.style.display = 'none'; }
   });

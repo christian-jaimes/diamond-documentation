@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Graph:** nodes are now named by what they contain. A note shows its first `#` heading; notes without one, and other file types, show the parent folder and file name (for example `guides/setup`). Set `diamond.graph.nodeLabel` to `fileName` to show plain file names instead.
+- Long graph labels are shortened, labels that would overlap are hidden, and hovering a node shows its full name and path.
+
 ## 0.4.4
 
 - **Fixed:** copy, cut and paste (Ctrl/Cmd+C, X, V) now work in the live editor. With nothing selected, copy and cut take the whole line.
