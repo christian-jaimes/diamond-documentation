@@ -44,7 +44,7 @@ The toolbar has a text-style picker (normal text, headings 1–6), bold, italic,
 
 **Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
 
-**Table of contents.** Click the list icon in the toolbar (after the divider) or run **Diamond: Insert / Update Table of Contents** to insert a linked list of your headings at the cursor, between `<!-- toc -->
+**Table of contents.** Click the list icon in the toolbar (after the divider) or run **Diamond: Insert / Update Table of Contents** to insert a linked list of your headings at the cursor, between `` and `` markers. Whenever the note is saved the list between the markers is refreshed (turn this off with `diamond.toc.updateOnSave`). The document's single `#` title is left out.
 
 - [Features](#features)
 - [Live editor](#live-editor)
