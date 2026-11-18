@@ -26,7 +26,7 @@ The first stable release. The live editor now feels like a full Markdown editor,
 
 ### Branding
 
-- New logo and extension icon.
+- New logo, extension icon and side bar icon.
 
 ### Documentation
 

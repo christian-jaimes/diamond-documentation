@@ -10,7 +10,7 @@ tsconfig.json
 **/*.map
 *.vsix
 scripts/**
-media/logo.png
+media/logo.svg
 media/graph.js
 .github/**
 .gitignore

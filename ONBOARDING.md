@@ -141,7 +141,7 @@ Integration test tips:
 
 Packaging gotchas:
 - **Always use `--no-dependencies`** (the scripts already do). Without it, vsce runs `npm list`, which can mangle some paths (e.g. folders with GUID-like names). Then it matches no files and fails with *"Extension entrypoint(s) missing"*. We have no runtime dependencies, so nothing is lost.
-- `.vscodeignore` keeps sources, tests, `sample-docs`, scripts, `node_modules`, source maps, `media/logo.png` and `media/graph.js` out of the package. `media/graph.js` is excluded because the bundled copy is `dist/graph.js`. If you add a runtime file, check it is not excluded.
+- `.vscodeignore` keeps sources, tests, `sample-docs`, scripts, `node_modules`, source maps, `media/logo.svg` and `media/graph.js` out of the package. `media/graph.js` is excluded because the bundled copy is `dist/graph.js`. If you add a runtime file, check it is not excluded.
 - README images must be **https** to show on the Marketplace/Extensions page. vsce rewrites relative image links to `https://github.com/christian-jaimes/diamond-documentation/raw/HEAD/...` using the `repository` field. So a new image only shows once it is **pushed** to GitHub.
 - vsce also rewrites `[text](path)` *examples* in the README into GitHub links. That is why the README writes them as `<code>[text]&#40;path)</code>`.
 
