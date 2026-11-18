@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Find and replace in the live editor now looks and works like VS Code's own** (Ctrl/Cmd+F): a floating widget in the top-right with inline Match Case, Whole Word and Regex toggles, an "N of M" / "No results" counter, previous/next buttons, Find in Selection, a close button and a collapsible replace row (Replace and Replace All). Enter / Shift+Enter / F3 move between matches, Escape closes, Ctrl/Cmd+H opens it with Replace shown, and Alt+C / Alt+W / Alt+R / Alt+L toggle the options. It uses your theme's colours.
+
 ## 0.4.4
 
 - **Fixed:** copy, cut and paste (Ctrl/Cmd+C, X, V) now work in the live editor. With nothing selected, copy and cut take the whole line.
