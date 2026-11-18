@@ -2,7 +2,7 @@
 
 # Diamond Documentation
 
-Write and navigate project documentation inside VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
+VS Code extension for managing project documentation through a live Markdown editor, wiki-style links, backlinks, and an interactive knowledge graph, keeping everything local, plain-text, and Git-friendly. Write and navigate project documentation inside VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
 
 ![The live editor with its formatting toolbar, and the Diamond side bar with the local graph, colour legend, backlinks and outgoing links](media/screenshot.png)
 
