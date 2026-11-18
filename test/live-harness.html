@@ -38,6 +38,16 @@ window.acquireVsCodeApi = () => ({
   postMessage: m => {
     sent.push(m);
     if (m.type === 'ready') { window.postMessage({ type: 'init', text: sample, settings: { toolbar: true } }, '*'); }
+    if (m.type === 'linkFiles') {
+      const files = [['Getting Started', 'docs/Getting Started.md', 1], ['API Design', 'docs/architecture/API Design.md', 1], ['Architecture Overview', 'docs/architecture/Architecture Overview.md', 1],
+        ['Storage', 'docs/architecture/Storage.md', 1], ['README', 'README.md', 1], ['api-client.ts', 'src/api-client.ts', 0], ['schema.sql', 'database/schema.sql', 0], ['logo.svg', 'assets/logo.svg', 0]]
+        .map(([text, path, md]) => ({ text, path, md: !!md }));
+      setTimeout(() => window.postMessage({ type: 'linkFiles', files }, '*'), 5);
+    }
+    if (m.type === 'linkHeadings') {
+      const headings = /Storage/i.test(m.target) ? [{ text: 'Overview', level: 1 }, { text: 'Tables', level: 2 }, { text: 'Migrations', level: 2 }] : [];
+      setTimeout(() => window.postMessage({ type: 'linkHeadings', id: m.id, headings }, '*'), 5);
+    }
     if (m.type === 'resolve') {
       const items = {};
       for (const i of m.items) {

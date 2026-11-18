@@ -7,6 +7,8 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirro
 import { deleteMarkupBackward, insertNewlineContinueMarkup, markdownLanguage } from '@codemirror/lang-markdown';
 import { HighlightStyle, Language, LanguageSupport, indentUnit, syntaxHighlighting, syntaxTree } from '@codemirror/language';
 import { searchKeymap } from '@codemirror/search';
+import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import { handleLinkMessage, linkCompletion, prefetchLinkFiles } from './linkComplete';
 import { findKeymap, findWidget } from './findWidget';
 import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
@@ -681,7 +683,7 @@ function replaceText(view: EditorView, text: string) {
 let view: EditorView | undefined;
 let toolbar: ReturnType<typeof createToolbar> | undefined;
 
-function createEditor(text: string, settings: { toolbar?: boolean; readableLineLength?: boolean; fontSize?: number; fontFamily?: string; }) {
+function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrackets?: boolean; readableLineLength?: boolean; fontSize?: number; fontFamily?: string; }) {
   const body = document.body;
   body.classList.toggle('readable', settings.readableLineLength !== false);
   body.style.setProperty('--diamond-font-size', settings.fontSize ? settings.fontSize + 'px' : null);
@@ -702,6 +704,14 @@ function createEditor(text: string, settings: { toolbar?: boolean; readableLineL
     markdownSupport,
     syntaxHighlighting(highlight),
     findWidget,
+    // Auto-closing: ( [ { and " (no quote right after a word character). Typing the closer skips over it,
+    // Backspace in an empty pair removes both, and typing an opener over a selection wraps it.
+    ...(settings.autoCloseBrackets === false ? [] : [
+      closeBrackets(),
+      EditorState.languageData.of(() => [{ closeBrackets: { brackets: ['(', '[', '{', '"'] } }]),
+      keymap.of(closeBracketsKeymap),
+    ]),
+    linkCompletion(msg => vscode.postMessage(msg)),
     keymap.of([
       { key: 'Enter', run: insertNewlineContinueMarkup },
       { key: 'Backspace', run: deleteMarkupBackward },
@@ -716,6 +726,7 @@ function createEditor(text: string, settings: { toolbar?: boolean; readableLineL
     reportSelection,
     theme,
   ];
+  prefetchLinkFiles();
   const created = new EditorView({ state: EditorState.create({ doc: text, extensions }), parent: document.getElementById('editor')! });
   toolbar?.update(created);
   return created;
@@ -730,6 +741,7 @@ function reveal(lineNo: number) {
 
 window.addEventListener('message', ev => {
   const msg = ev.data;
+  if (handleLinkMessage(msg)) { return; }
   switch (msg.type) {
     case 'init':
       seq = msg.seq;

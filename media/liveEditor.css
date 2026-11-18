@@ -142,3 +142,26 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-find-none .cm-find-count { color: var(--vscode-errorForeground, inherit); }
 .cm-find-replace-row .cm-find-input { flex: none; width: calc(100% - 175px); }
 .cm-find-replace-row .cm-find-btn:first-of-type { margin-left: 4px; }
+
+/* Link autocomplete: styled like VS Code's suggest widget (see src/webview/linkComplete.ts) */
+.cm-tooltip.cm-tooltip-autocomplete.cm-d-complete {
+  background: var(--vscode-editorSuggestWidget-background, var(--vscode-editorWidget-background));
+  color: var(--vscode-editorSuggestWidget-foreground, var(--vscode-editorWidget-foreground, var(--vscode-foreground)));
+  border: 1px solid var(--vscode-editorSuggestWidget-border, var(--vscode-editorWidget-border, transparent));
+  border-radius: 3px; overflow: hidden;
+  box-shadow: 0 0 8px 2px var(--vscode-widget-shadow, rgba(0, 0, 0, .36));
+  font: 13px/1.4 var(--vscode-font-family, sans-serif);
+}
+.cm-d-complete > ul { font: inherit; min-width: 220px; max-width: min(520px, 90vw); max-height: 264px; }
+.cm-d-complete > ul > li {
+  display: flex; align-items: baseline; gap: 12px; padding: 0 8px 0 6px; line-height: 22px; white-space: nowrap;
+}
+.cm-d-complete > ul > li[aria-selected] {
+  background: var(--vscode-editorSuggestWidget-selectedBackground, var(--vscode-list-activeSelectionBackground));
+  color: var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-list-activeSelectionForeground, inherit));
+}
+.cm-d-complete .cm-completionLabel { flex: none; }
+.cm-d-complete .cm-completionMatchedText { text-decoration: none; font-weight: 600; color: var(--vscode-editorSuggestWidget-highlightForeground, var(--vscode-textLink-foreground)); }
+.cm-d-complete [aria-selected] .cm-completionMatchedText { color: var(--vscode-editorSuggestWidget-focusHighlightForeground, var(--vscode-editorSuggestWidget-highlightForeground, inherit)); }
+.cm-d-complete .cm-completionDetail { margin: 0 0 0 auto; padding-left: 12px; font-style: normal; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; }
+.cm-d-complete .cm-completionIcon { display: none; }
