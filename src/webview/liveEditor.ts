@@ -560,7 +560,11 @@ function clipboardAction(view: EditorView, action: 'copy' | 'cut' | 'paste') {
 }
 
 function pasteText(view: EditorView, text: string) {
-  view.dispatch(view.state.replaceSelection(text.replace(/\r\n?/g, '\n')), { userEvent: 'input.paste', scrollIntoView: true });
+  text = text.replace(/\r\n?/g, '\n');
+  // A URL pasted over selected text becomes a link.
+  const link = md.pasteLink(view.state.doc.toString(), view.state.selection.ranges.map(r => ({ anchor: r.anchor, head: r.head })), text);
+  if (link) { applyResult(view, link); return; }
+  view.dispatch(view.state.replaceSelection(text), { userEvent: 'input.paste', scrollIntoView: true });
   view.focus();
 }
 

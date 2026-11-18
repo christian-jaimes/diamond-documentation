@@ -33,3 +33,6 @@ assert.strictEqual(f.tableNavigate('plain', 0, true), undefined);
 const lst = '1. a\n3. b\n   - x\n   1. p\n   5. q\n7. c\n\ntext\n\n4. z\n6. y';
 assert.strictEqual(ap(lst, f.renumberLists(lst)), '1. a\n2. b\n   - x\n   1. p\n   2. q\n3. c\n\ntext\n\n4. z\n5. y');
 assert.strictEqual(f.renumberLists('1. a\n2. b'), undefined);
+
+// Indenting an item restarts numbering at 1 for the nested list and continues the parent afterwards.
+assert.strictEqual(ap('1. a\n    2. b\n3. c', f.renumberLists('1. a\n    2. b\n3. c')), '1. a\n    1. b\n2. c');

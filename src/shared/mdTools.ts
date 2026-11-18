@@ -156,7 +156,7 @@ export function renumberLists(text: string): EditResult | undefined {
     }
     const top = stack[stack.length - 1];
     let n: number;
-    if (top && top.indent === indent) { n = ++top.n; } else { n = +m[2]; stack.push({ indent, n }); }
+    if (top && top.indent === indent) { n = ++top.n; } else { n = top ? 1 : +m[2]; stack.push({ indent, n }); }
     if (n !== +m[2]) { changes.push({ from: l.from + m[1].length, to: l.from + m[1].length + m[2].length, insert: String(n) }); }
   }
   return changes.length ? { changes, selections: [] } : undefined;
