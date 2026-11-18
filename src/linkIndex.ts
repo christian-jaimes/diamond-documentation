@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { MARKDOWN_FILE, noteSignature, parseNote, ParsedLink, ParsedNote } from './parser';
 import { globToRegExp } from './shared/glob';
+import { nodeLabel, NodeLabelMode, parseNodeLabelMode } from './shared/nodeLabel';
 
 export const isMarkdown = (uri: vscode.Uri) => MARKDOWN_FILE.test(uri.path);
 export const stripMarkdownExt = (p: string) => p.replace(MARKDOWN_FILE, '');
@@ -35,6 +36,7 @@ export class LinkIndex implements vscode.Disposable {
   /** Every link resolved, plus links grouped by target; rebuilt lazily after a change. */
   private resolved: { all: ResolvedLink[]; incoming: Map<string, Backlink[]> } | undefined;
   private graphCache: GraphData | undefined;
+  private graphLabelMode: NodeLabelMode | undefined;
   private exclude: RegExp | undefined;
   private typingTimers = new Map<string, NodeJS.Timeout>();
   private disposables: vscode.Disposable[] = [];
@@ -282,9 +284,20 @@ export class LinkIndex implements vscode.Disposable {
     return this.resolveAll().incoming.get(uri.toString()) ?? [];
   }
 
+  /** How graph nodes are named (`diamond.graph.nodeLabel`). */
+  nodeLabelMode(): NodeLabelMode {
+    return parseNodeLabelMode(vscode.workspace.getConfiguration('diamond.graph').get('nodeLabel'));
+  }
+
+  /** Text of a note's first `#` heading, from the already parsed headings. */
+  private firstTitle(key: string): string | undefined {
+    return this.notes.get(key)?.headings.find(h => h.level === 1)?.text;
+  }
+
   /** Notes, linked files and unresolved link targets, with the links between them (cached). */
   graph(): GraphData {
-    if (this.graphCache) { return this.graphCache; }
+    const mode = this.nodeLabelMode();
+    if (this.graphCache && this.graphLabelMode === mode) { return this.graphCache; }
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
     const nodeFor = (uri: vscode.Uri): string => {
@@ -292,7 +305,7 @@ export class LinkIndex implements vscode.Disposable {
       if (!nodes.has(id)) {
         const rel = this.relativePath(uri);
         const note = isMarkdown(uri);
-        nodes.set(id, { id, label: note ? stem(uri.path) : path.posix.basename(uri.path), path: rel, type: note ? 'note' : 'file', group: rel.includes('/') ? rel.split('/')[0] : '/', tags: this.notes.get(id)?.tags ?? [] });
+        nodes.set(id, { id, label: nodeLabel(mode, { path: rel, isMarkdown: note, heading: this.firstTitle(id) }), path: rel, type: note ? 'note' : 'file', group: rel.includes('/') ? rel.split('/')[0] : '/', tags: this.notes.get(id)?.tags ?? [] });
       }
       return id;
     };
@@ -310,6 +323,7 @@ export class LinkIndex implements vscode.Disposable {
       if (targetId !== sourceId) { edges.set(`${sourceId}→${targetId}`, { source: sourceId, target: targetId }); }
     }
     this.graphCache = { nodes: [...nodes.values()], edges: [...edges.values()] };
+    this.graphLabelMode = mode;
     return this.graphCache;
   }
 

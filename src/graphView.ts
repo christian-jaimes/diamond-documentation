@@ -54,6 +54,7 @@ class GraphController implements vscode.Disposable {
       }),
       this.index.onDidChange(() => { this.stale = true; refresh(); }),
       this.colors.onDidChange(() => { this.stale = true; refresh(); }),
+      vscode.workspace.onDidChangeConfiguration(e => { if (e.affectsConfiguration('diamond.graph.nodeLabel')) { this.stale = true; refresh(); } }),
       onDidChangeVisibility(refresh),
       // Text and live editors alike: follow the active tab.
       vscode.window.tabGroups.onDidChangeTabs(() => { const uri = activeTabUri(); if (uri) { this.setActive(uri); } }),

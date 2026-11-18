@@ -118,7 +118,7 @@ export function parseNote(text: string): ParsedNote {
 
 /** What other notes care about: link targets and tags (not positions or plain text). */
 export function noteSignature(note: ParsedNote): string {
-  return note.links.map(l => `${l.kind}${l.embed ? '!' : ''}:${l.target}#${l.heading ?? ''}`).join('|') + '||' + note.tags.join('|');
+  return note.links.map(l => `${l.kind}${l.embed ? '!' : ''}:${l.target}#${l.heading ?? ''}`).join('|') + '||' + note.tags.join('|') + '||' + (note.headings.find(h => h.level === 1)?.text ?? '');
 }
 
 /** GitHub-style heading slug, used to match `[[note#Heading]]` and `file.md#heading`. */
