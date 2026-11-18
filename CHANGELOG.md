@@ -1,18 +1,36 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
 
-- **Paste a URL over selected text to make a link** in the live editor: the selection becomes `[text](url)`.
-- **Table of contents.** A toolbar button (after the divider) and the command **Diamond: Insert / Update Table of Contents** (both editors) builds a linked, nested list of the note's headings between `<!-- toc -->` and `<!-- /toc -->`. The list is refreshed on save; turn that off with `diamond.toc.updateOnSave`.
-- **Table navigation.** Tab / Shift+Tab move between table cells in both editors without changing the text (use Format Table to align); Tab in the last cell adds a row. Outside tables Tab behaves as before.
-- **Ordered lists renumber themselves** in the live editor when items are added, removed or moved.
-- **Minimap in the live editor.** A scaled-down picture of the note on the right edge, like VS Code's minimap in the code editor (VS Code can't show its own for custom editors, so this one is drawn in the editor). The viewport slider is always visible (it replaces the scrollbar); drag it to scroll, or click anywhere to jump there; the mouse wheel over it scrolls too. Search matches, the selection and spell-check/diagnostic underlines are marked in your theme's minimap colours. It follows `editor.minimap.enabled`, `side`, `renderCharacters`, `maxColumn`, `size` and `scale` (including `[markdown]` overrides). Differences from VS Code's: the minimap's slider replaces the scrollbar instead of overlaying it, shows the raw Markdown text in one colour (headings drawn bolder), and has no section-header labels or occurrence highlights.
-- **Spell checking in the live editor.** Misspellings reported by the Code Spell Checker extension are underlined in the live editor; hover for the message and Quick Fixes (suggestions, add to dictionary…). Nothing is shown if the extension isn't installed. New setting `diamond.liveEditor.diagnostics` (`spelling` by default, `all`, `off`).
-- **`[[` autocomplete in the live editor.** Typing `[[` suggests every file in the workspace (notes, code, images… with fuzzy matching on name and path); choosing one completes the link and its closing `]]`. Type `#` after a note name (`[[Storage#`) to pick one of its headings. The popup uses your theme's suggest-widget colours. The source editor already offered the same completions, including headings.
-- **Auto-closing brackets in the live editor:** typing `(`, `[`, `{` or `"` inserts the closing character. Typing the closer skips over it, Backspace on an empty pair removes both, and typing an opener over selected text wraps it. A `"` right after a word character (as in `don"t`) is left alone. Turn it off with `diamond.liveEditor.autoCloseBrackets`; the source editor follows VS Code's `editor.autoClosingBrackets`.
-- **Find and replace in the live editor now looks and works like VS Code's own** (Ctrl/Cmd+F): a floating widget in the top-right with inline Match Case, Whole Word and Regex toggles, an "N of M" / "No results" counter, previous/next buttons, Find in Selection, a close button and a collapsible replace row (Replace and Replace All). Enter / Shift+Enter / F3 move between matches, Escape closes, Ctrl/Cmd+H opens it with Replace shown, and Alt+C / Alt+W / Alt+R / Alt+L toggle the options. It uses your theme's colours.
-- **Graph:** nodes are now named by what they contain. A note shows its first `#` heading; notes without one, and other file types, show the parent folder and file name (for example `guides/setup`). Set `diamond.graph.nodeLabel` to `fileName` to show plain file names instead.
-- Long graph labels are shortened, labels that would overlap are hidden, and hovering a node shows its full name and path.
+The first stable release. The live editor now feels like a full Markdown editor, and the graph is easier to read.
+
+### Live editor
+
+- **Find and replace** looks and works like VS Code's own (Ctrl/Cmd+F): a floating widget with Match Case, Whole Word and Regex toggles, an "N of M" counter, previous/next, Find in Selection and a collapsible replace row (Replace and Replace All). Enter / Shift+Enter / F3 move between matches, Escape closes, Ctrl/Cmd+H opens it with Replace shown, and Alt+C / Alt+W / Alt+R / Alt+L toggle the options. It uses your theme's colours.
+- **Minimap.** A scaled-down picture of the note on the right edge, like the one in VS Code's code editor. The viewport slider replaces the scrollbar: drag it to scroll, click anywhere to jump, or use the mouse wheel over it. Search matches, the selection and spell-check/diagnostic underlines are marked in your theme's minimap colours. It follows `editor.minimap.enabled`, `side`, `renderCharacters`, `maxColumn`, `size` and `scale` (including `[markdown]` overrides). It shows the raw Markdown in one colour, with headings drawn bolder, and has no section-header labels or occurrence highlights.
+- **Spell checking.** Misspellings reported by the Code Spell Checker extension are underlined; hover for the message and Quick Fixes (suggestions, add to dictionary…). Nothing is shown if that extension isn't installed. New setting `diamond.liveEditor.diagnostics` (`spelling` by default, `all`, `off`).
+- **`[[` autocomplete.** Typing `[[` suggests every file in the workspace, with fuzzy matching on name and path; choosing one completes the link and its closing `]]`. Type `#` after a note name (`[[Storage#`) to pick one of its headings.
+- **Auto-closing brackets:** typing `(`, `[`, `{` or `"` inserts the closing character. Typing the closer skips over it, Backspace on an empty pair removes both, and typing an opener over selected text wraps it. Turn it off with `diamond.liveEditor.autoCloseBrackets`; the source editor follows `editor.autoClosingBrackets`.
+- **Paste a URL over selected text** to turn the selection into a `[text](url)` link.
+- **Ordered lists renumber themselves** when items are added, removed or moved.
+
+### Both editors
+
+- **Table of contents.** A toolbar button and the command **Diamond: Insert / Update Table of Contents** build a linked, nested list of the note's headings between `<!-- toc -->` and `<!-- /toc -->`. It is refreshed on save; turn that off with `diamond.toc.updateOnSave`.
+- **Table navigation.** Tab / Shift+Tab move between table cells without changing the text (use Format Table to align); Tab in the last cell adds a row. Outside tables Tab behaves as before.
+
+### Graph
+
+- Nodes are named by what they contain: a note shows its first `#` heading; notes without one, and other file types, show the parent folder and file name (for example `guides/setup`). Set `diamond.graph.nodeLabel` to `fileName` for plain file names.
+- Long labels are shortened, labels that would overlap are hidden, and hovering a node shows its full name and path.
+
+### Branding
+
+- New logo and extension icon.
+
+### Documentation
+
+- Added a developer onboarding guide.
 
 ## 0.4.4
 

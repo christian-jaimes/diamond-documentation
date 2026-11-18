@@ -2,7 +2,7 @@
   "name": "diamond-documentation",
   "displayName": "Diamond Documentation",
   "description": "Write and navigate project documentation in VS Code: an editable formatted editor, links to any file, backlinks and an interactive graph of your docs and code.",
-  "version": "0.4.4",
+  "version": "1.0.0",
   "publisher": "christian-jaimes",
   "license": "MIT",
   "repository": {
@@ -484,7 +484,6 @@
     "package": "vsce package --no-dependencies",
     "test": "tsc -p ./ && node build.mjs && node test/run.js",
     "bundle-report": "node scripts/bundle-report.mjs",
-    "build-icon": "node scripts/build-icon.mjs",
     "publish": "vsce publish --no-dependencies"
   },
   "devDependencies": {
