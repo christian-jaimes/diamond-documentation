@@ -34,7 +34,6 @@ Then open the folder in VS Code and press **F5** (Run Extension). In the Extensi
 | `npm run package` | Builds `diamond-documentation-<version>.vsix` (`vsce package --no-dependencies`) |
 | `npm run publish` | Publishes to the Marketplace (`vsce publish --no-dependencies`); you must be logged in first, see below |
 | `npm run bundle-report` | Prints what takes up space in each bundle |
-| `npm run build-icon` | Regenerates `media/icon.png` from the SVG logo (uses `sharp`) |
 
 `vscode:prepublish` runs a production build automatically before packaging or publishing.
 
