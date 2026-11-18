@@ -28,6 +28,8 @@ Markdown files open in the live editor automatically. To see the raw Markdown, c
 
 The toolbar has a text-style picker (normal text, headings 1–6), bold, italic, strikethrough, highlight, inline code, bullet / numbered / checkbox lists, quote, link to a file, code block, table and divider. Buttons light up for the formatting under the cursor.
 
+**Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
+
 The live editor edits the same file as the source editor: saving, unsaved-changes markers, Git and undo all keep working, and both views stay in sync if you open them side by side.
 
 To open Markdown in the source editor by default instead, turn off `diamond.liveEditor.openByDefault` (or run **Diamond: Toggle Opening Markdown in the Live Editor**).
@@ -83,6 +85,7 @@ Table insert, table format and blockquote are in the Command Palette under **Dia
 | `diamond.updateLinksOnRename` | `true` | Rewrite links when files or folders move, then save. Files that already had unsaved changes are updated but left unsaved. |
 | `diamond.liveEditor.openByDefault` | `true` | Open Markdown in the live editor |
 | `diamond.liveEditor.toolbar` | `true` | Show the formatting toolbar |
+| `diamond.liveEditor.autoCloseBrackets` | `true` | Auto-close `(`, `[`, `{` and `"` in the live editor |
 | `diamond.statusBar.enabled` | `true` | Show word / character / link counts in the status bar |
 | `diamond.exclude` | `**/{node_modules,.git}/**` | Files that cannot be linked and are not indexed |
 | `diamond.newNoteFolder` | *(empty)* | Where notes created from unresolved links go (empty = next to the current note) |
@@ -103,6 +106,7 @@ For building, testing and releasing, see the [developer onboarding guide](ONBOAR
 - `src/renameLinks.ts`: link rewriting on rename / move
 - `src/liveEditor.ts` + `src/webview/`: the live editor (a custom text editor built on CodeMirror 6)
 - `src/shared/format.ts`: formatting operations shared by both editors
+- `src/webview/linkComplete.ts` + `src/shared/wikiComplete.ts`: `[[` / `#` autocomplete for the live editor (fuzzy ranking is shared and unit-tested)
 - `src/shared/colors.ts` + `src/colorConfig.ts`: `.diamond/graph.yml`
 - `src/graphView.ts` + `media/graph.js`: graph panel and side bar view (canvas, Barnes–Hut force layout)
 - `src/linkViews.ts`: Backlinks and Outgoing Links views

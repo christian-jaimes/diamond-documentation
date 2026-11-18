@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { LinkIndex, isMarkdown } from './linkIndex';
+import type { FileEntry } from './shared/wikiComplete';
 import { IMAGE, parseNote, ParsedLink, slugify } from './parser';
 
 const MD: vscode.DocumentSelector = [{ language: 'markdown' }];
@@ -84,7 +85,7 @@ class WikiLinkProvider implements vscode.DocumentLinkProvider {
 
 class WikiCompletionProvider implements vscode.CompletionItemProvider {
   /** Link text and path for every file; rebuilt only when files are added, removed or renamed. */
-  private entries: { text: string; rel: string; md: boolean }[] | undefined;
+  private entries: FileEntry[] | undefined;
 
   constructor(private index: LinkIndex) {
     index.onDidChangeFiles(() => { this.entries = undefined; });
@@ -109,9 +110,9 @@ class WikiCompletionProvider implements vscode.CompletionItemProvider {
       });
     }
 
-    this.entries ??= this.index.allFiles().map(uri => ({ text: this.index.linkTextFor(uri), rel: this.index.relativePath(uri), md: isMarkdown(uri) }));
+    this.entries ??= this.index.linkEntries();
     const range = new vscode.Range(pos.line, pos.character - typed.length, pos.line, pos.character);
-    return this.entries.map(({ text, rel, md }) => {
+    return this.entries.map(({ text, path: rel, md }) => {
       const item = new vscode.CompletionItem({ label: text, description: rel }, md ? vscode.CompletionItemKind.File : vscode.CompletionItemKind.Reference);
       item.range = range;
       item.insertText = text + closing;

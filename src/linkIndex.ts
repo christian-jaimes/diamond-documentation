@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { MARKDOWN_FILE, noteSignature, parseNote, ParsedLink, ParsedNote } from './parser';
 import { globToRegExp } from './shared/glob';
+import type { FileEntry } from './shared/wikiComplete';
 import { nodeLabel, NodeLabelMode, parseNodeLabelMode } from './shared/nodeLabel';
 
 export const isMarkdown = (uri: vscode.Uri) => MARKDOWN_FILE.test(uri.path);
@@ -198,6 +199,11 @@ export class LinkIndex implements vscode.Disposable {
   // ---------------------------------------------------------------- queries
 
   allFiles(): vscode.Uri[] { return [...this.files.values()]; }
+
+  /** Link text, workspace-relative path and kind of every file, for link autocomplete. */
+  linkEntries(): FileEntry[] {
+    return this.allFiles().map(uri => ({ text: this.linkTextFor(uri), path: this.relativePath(uri), md: isMarkdown(uri) }));
+  }
   note(uri: vscode.Uri): ParsedNote | undefined { return this.notes.get(uri.toString()); }
 
   /** Shortest unambiguous wikilink text for a file: the bare name, or the path when names collide. */

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **`[[` autocomplete in the live editor.** Typing `[[` suggests every file in the workspace (notes, code, images… with fuzzy matching on name and path); choosing one completes the link and its closing `]]`. Type `#` after a note name (`[[Storage#`) to pick one of its headings. The popup uses your theme's suggest-widget colours. The source editor already offered the same completions, including headings.
+- **Auto-closing brackets in the live editor:** typing `(`, `[`, `{` or `"` inserts the closing character. Typing the closer skips over it, Backspace on an empty pair removes both, and typing an opener over selected text wraps it. A `"` right after a word character (as in `don"t`) is left alone. Turn it off with `diamond.liveEditor.autoCloseBrackets`; the source editor follows VS Code's `editor.autoClosingBrackets`.
 - **Find and replace in the live editor now looks and works like VS Code's own** (Ctrl/Cmd+F): a floating widget in the top-right with inline Match Case, Whole Word and Regex toggles, an "N of M" / "No results" counter, previous/next buttons, Find in Selection, a close button and a collapsible replace row (Replace and Replace All). Enter / Shift+Enter / F3 move between matches, Escape closes, Ctrl/Cmd+H opens it with Replace shown, and Alt+C / Alt+W / Alt+R / Alt+L toggle the options. It uses your theme's colours.
 - **Graph:** nodes are now named by what they contain. A note shows its first `#` heading; notes without one, and other file types, show the parent folder and file name (for example `guides/setup`). Set `diamond.graph.nodeLabel` to `fileName` to show plain file names instead.
 - Long graph labels are shortened, labels that would overlap are hidden, and hovering a node shows its full name and path.

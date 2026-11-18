@@ -399,6 +399,11 @@
           "default": true,
           "description": "Show the formatting toolbar at the top of the live editor."
         },
+        "diamond.liveEditor.autoCloseBrackets": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically insert the closing `)`, `]`, `}` or `\"` in the live editor when you type the opening one. The source editor follows VS Code's `editor.autoClosingBrackets`."
+        },
         "diamond.statusBar.enabled": {
           "type": "boolean",
           "default": true,
@@ -433,6 +438,7 @@
     "publish": "vsce publish --no-dependencies"
   },
   "devDependencies": {
+    "@codemirror/autocomplete": "^6.18.4",
     "@codemirror/commands": "^6.7.1",
     "@codemirror/lang-markdown": "^6.3.1",
     "@codemirror/language": "^6.10.8",

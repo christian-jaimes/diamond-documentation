@@ -23,6 +23,28 @@ assert.deepStrictEqual(n.tags, ['todo']);
 assert.deepStrictEqual(splitWikiTarget('a/b#c|d'), { target: 'a/b', heading: 'c', alias: 'd', aliasOffset: 6 });
 assert.strictEqual(slugify('Install & Run!'), 'install--run');
 
+// Wikilink autocomplete helpers
+const wc = require('../out/shared/wikiComplete');
+assert.deepStrictEqual(wc.wikiContext('see [['), { kind: 'file', query: '', typed: 0 });
+assert.deepStrictEqual(wc.wikiContext('see ![[Arch'), { kind: 'file', query: 'Arch', typed: 4 });
+assert.deepStrictEqual(wc.wikiContext('[[Storage#Mi'), { kind: 'heading', target: 'Storage', query: 'Mi', typed: 2 });
+assert.deepStrictEqual(wc.wikiContext('[[#'), { kind: 'heading', target: '', query: '', typed: 0 });
+assert.strictEqual(wc.wikiContext('[[done]] and'), undefined);
+assert.strictEqual(wc.wikiContext('[[note|ali'), undefined);
+assert.strictEqual(wc.fuzzyMatch('xyz', 'Getting Started'), undefined);
+assert.deepStrictEqual(wc.fuzzyMatch('gs', 'Getting Started').matched, [0, 8]);
+assert.deepStrictEqual(wc.fuzzyMatch('start', 'Getting Started').matched, [8, 9, 10, 11, 12]);
+const files = [
+  { text: 'Getting Started', path: 'docs/Getting Started.md', md: true },
+  { text: 'API Design', path: 'docs/architecture/API Design.md', md: true },
+  { text: 'api-client.ts', path: 'src/api-client.ts', md: false },
+  { text: 'schema.sql', path: 'database/schema.sql', md: false },
+];
+assert.deepStrictEqual(wc.rankFiles(files, 'api').map(r => r.entry.text), ['API Design', 'api-client.ts']);
+assert.deepStrictEqual(wc.rankFiles(files, 'gtst').map(r => r.entry.text), ['Getting Started']);
+assert.deepStrictEqual(wc.rankFiles(files, 'database').map(r => r.entry.text), ['schema.sql']); // matches by path
+assert.strictEqual(wc.rankFiles(files, '').length, 4);
+
 // Graph node labels
 const nl = require('../out/shared/nodeLabel');
 assert.strictEqual(nl.nodeLabel('title', { path: 'guides/setup.md', isMarkdown: true, heading: 'Setting up' }), 'Setting up');

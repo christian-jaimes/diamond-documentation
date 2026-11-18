@@ -126,7 +126,7 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
 
     const settings = () => {
       const c = vscode.workspace.getConfiguration('diamond.liveEditor');
-      return { toolbar: c.get('toolbar', true), readableLineLength: c.get('readableLineLength', true), fontSize: c.get<number>('fontSize') || undefined, fontFamily: c.get<string>('fontFamily') || undefined };
+      return { toolbar: c.get('toolbar', true), autoCloseBrackets: c.get('autoCloseBrackets', true), readableLineLength: c.get('readableLineLength', true), fontSize: c.get<number>('fontSize') || undefined, fontFamily: c.get<string>('fontFamily') || undefined };
     };
 
     const disposables: vscode.Disposable[] = [
@@ -165,6 +165,17 @@ export class LiveEditorProvider implements vscode.CustomTextEditorProvider, Live
           case 'openExternal':
             if (/^(https?|mailto):/i.test(msg.href)) { await vscode.env.openExternal(vscode.Uri.parse(msg.href)); }
             break;
+          case 'linkFiles':
+            // Every file as [[link]] text + path, for the webview's autocomplete (it filters locally).
+            await this.index.ready;
+            post({ type: 'linkFiles', files: this.index.linkEntries() });
+            break;
+          case 'linkHeadings': {
+            await this.index.ready;
+            const uri = this.index.resolve({ target: String(msg.target ?? ''), kind: 'wiki' }, document.uri);
+            post({ type: 'linkHeadings', id: msg.id, headings: (uri && this.index.note(uri)?.headings.map(h => ({ text: h.text, level: h.level }))) || [] });
+            break;
+          }
           case 'resolve': {
             await this.index.ready;
             const items: Record<string, unknown> = {};
