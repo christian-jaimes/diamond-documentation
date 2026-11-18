@@ -165,3 +165,18 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-d-complete [aria-selected] .cm-completionMatchedText { color: var(--vscode-editorSuggestWidget-focusHighlightForeground, var(--vscode-editorSuggestWidget-highlightForeground, inherit)); }
 .cm-d-complete .cm-completionDetail { margin: 0 0 0 auto; padding-left: 12px; font-style: normal; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; }
 .cm-d-complete .cm-completionIcon { display: none; }
+
+/* Diagnostics (spelling etc.): squiggles with a hover card and quick fixes. */
+.cm-d-diag { text-decoration-line: underline; text-decoration-style: wavy; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.cm-d-diag-error { text-decoration-color: var(--vscode-editorError-foreground, #f14c4c); }
+.cm-d-diag-warning { text-decoration-color: var(--vscode-editorWarning-foreground, #cca700); }
+.cm-d-diag-info { text-decoration-color: var(--vscode-editorInfo-foreground, #3794ff); }
+.cm-d-diag-hint { text-decoration-color: var(--vscode-editorHint-foreground, #eeeeee); text-decoration-style: dotted; }
+.cm-tooltip:has(.cm-d-diag-tip) { background: var(--vscode-editorHoverWidget-background); color: var(--vscode-editorHoverWidget-foreground, var(--vscode-foreground)); border: 1px solid var(--vscode-editorHoverWidget-border, var(--vscode-widget-border, #454545)); border-radius: 3px; box-shadow: 0 2px 8px var(--vscode-widget-shadow, rgba(0,0,0,.36)); max-width: 420px; }
+.cm-d-diag-tip { padding: 4px 0; font-size: 13px; line-height: 1.4; }
+.cm-d-diag-msg { padding: 2px 10px; }
+.cm-d-diag-src { padding: 0 10px 2px; opacity: 0.6; font-size: 12px; }
+.cm-d-diag-fixes { border-top: 1px solid var(--vscode-editorHoverWidget-border, var(--vscode-widget-border, #454545)); margin-top: 4px; padding-top: 2px; }
+.cm-d-diag-head { padding: 2px 10px; opacity: 0.6; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.cm-d-diag-fix { display: block; width: 100%; text-align: left; padding: 2px 10px; background: none; border: 0; color: var(--vscode-textLink-foreground); font: inherit; cursor: pointer; }
+.cm-d-diag-fix:hover { background: var(--vscode-list-hoverBackground); color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground)); }
