@@ -1,7 +1,7 @@
 // [[wikilink]] autocomplete for the live editor: file names after `[[`, headings after `[[file#`.
 // Files and headings come from the extension's LinkIndex (see the `linkFiles` / `linkHeadings`
 // messages in src/liveEditor.ts); the file list is cached here so typing filters it instantly.
-import { Completion, CompletionContext, CompletionResult, autocompletion } from '@codemirror/autocomplete';
+import { Completion, CompletionContext, CompletionResult, autocompletion, completionStatus, startCompletion } from '@codemirror/autocomplete';
 import { EditorSelection, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { syntaxTree } from '@codemirror/language';
@@ -149,6 +149,21 @@ const stepOverClose = EditorView.inputHandler.of((view, from, to, text) => {
   return true;
 });
 
+/**
+ * Open the popup whenever an edit leaves the cursor inside `[[…` or `[[…#…`. CodeMirror's own
+ * activate-on-typing depends on how the keystroke arrived (AltGr combinations for `[` on many
+ * keyboard layouts, IME…), so this does not rely on it.
+ */
+const openOnLink = EditorView.updateListener.of(u => {
+  if (!u.docChanged || !u.view.hasFocus || u.transactions.some(tr => tr.isUserEvent('input.complete') || !tr.isUserEvent('input'))) { return; }
+  const { state } = u.view;
+  const head = state.selection.main.head;
+  if (!state.selection.main.empty || completionStatus(state) !== null) { return; }
+  const line = state.doc.lineAt(head);
+  if (!wikiContext(state.sliceDoc(line.from, head))) { return; }
+  setTimeout(() => { if (u.view.state.selection.main.head === head) { startCompletion(u.view); } }, 0);
+});
+
 export function linkCompletion(postMessage: Post): Extension {
   post = postMessage;
   return [
@@ -159,6 +174,7 @@ export function linkCompletion(postMessage: Post): Extension {
       maxRenderedOptions: 60,
       tooltipClass: () => 'cm-d-complete',
     }),
+    openOnLink,
     stepOverClose,
   ];
 }
