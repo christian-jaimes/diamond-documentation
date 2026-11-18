@@ -1,8 +1,8 @@
 {
   "name": "diamond-documentation",
-  "displayName": "Diamond Documentation",
-  "description": "Write and navigate project documentation in VS Code: an editable formatted editor, links to any file, backlinks and an interactive graph of your docs and code.",
-  "version": "1.0.0",
+  "displayName": "Diamond: Markdown Notes, Wikilinks & Graph",
+  "description": "Live Markdown editor for project docs with wikilinks, backlinks, graph view, table of contents and spellcheck.",
+  "version": "1.0.1",
   "publisher": "christian-jaimes",
   "license": "MIT",
   "repository": {
@@ -17,18 +17,34 @@
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Notebooks",
     "Visualization",
     "Other"
   ],
   "keywords": [
     "markdown",
-    "documentation",
+    "wiki",
     "wikilinks",
-    "graph",
-    "notes",
-    "knowledge base",
+    "wiki links",
     "backlinks",
-    "wysiwyg"
+    "graph",
+    "graph view",
+    "knowledge graph",
+    "knowledge base",
+    "notes",
+    "note taking",
+    "zettelkasten",
+    "second brain",
+    "documentation",
+    "docs",
+    "live preview",
+    "wysiwyg",
+    "markdown editor",
+    "table of contents",
+    "toc",
+    "spellcheck",
+    "local-first",
+    "git"
   ],
   "main": "./dist/extension.js",
   "activationEvents": [

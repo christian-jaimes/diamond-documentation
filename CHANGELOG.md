@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Marketplace and GitHub listing: badges, new display name "Diamond: Markdown Notes, Wikilinks & Graph", keyword-rich description, expanded keywords and categories, and a clearer README introduction. The extension ID is unchanged.
+
 ## 1.0.0
 
 The first stable release. The live editor now feels like a full Markdown editor, and the graph is easier to read.

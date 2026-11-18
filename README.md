@@ -1,8 +1,21 @@
-<p align="center"><img src="media/icon.png" width="128" alt="Diamond Documentation logo"></p>
+<p align="center"><img src="media/Diamond%20Documentation%20Banner.png" alt="Diamond Documentation Banner"></p>
 
-# Diamond Documentation
+# Diamond: Markdown Notes, Wikilinks & Graph
 
-VS Code extension for managing project documentation through a live Markdown editor, wiki-style links, backlinks, and an interactive knowledge graph, keeping everything local, plain-text, and Git-friendly. Write and navigate project documentation inside VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
+<div align="center">
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+</div>
+
+<p align="center"><b>Markdown notes · Wikilinks · Backlinks · Graph view · Local-first · Git-friendly</b></p>
+
+**A live Markdown editor for VS Code with wikilinks, backlinks, an interactive knowledge graph, table of contents and spellcheck, for project docs and notes that stay local, plain-text and Git-friendly.** Write and navigate project documentation inside VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
 
 ![The live editor with its formatting toolbar, and the Diamond side bar with the local graph, colour legend, backlinks and outgoing links](media/screenshot.png)
 
@@ -31,7 +44,16 @@ The toolbar has a text-style picker (normal text, headings 1–6), bold, italic,
 
 **Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
 
-**Table of contents.** Click the list icon in the toolbar (after the divider) or run **Diamond: Insert / Update Table of Contents** to insert a linked list of your headings at the cursor, between `<!-- toc -->` and `<!-- /toc -->` markers. Whenever the note is saved the list between the markers is refreshed (turn this off with `diamond.toc.updateOnSave`). The document's single `#` title is left out.
+**Table of contents.** Click the list icon in the toolbar (after the divider) or run **Diamond: Insert / Update Table of Contents** to insert a linked list of your headings at the cursor, between `` and `` markers. Whenever the note is saved the list between the markers is refreshed (turn this off with `diamond.toc.updateOnSave`). The document's single `#` title is left out.
+
+- [Features](#features)
+- [Live editor](#live-editor)
+- [Graph colours](#graph-colours)
+- [Shortcuts](#shortcuts)
+- [Settings](#settings)
+  - [Layout](#layout)
+
+<!-- /toc -->` markers. Whenever the note is saved the list between the markers is refreshed (turn this off with `diamond.toc.updateOnSave`). The document's single `#` title is left out.
 
 **Tables.** Inside a table, Tab and Shift+Tab move to the next or previous cell and re-align the pipes; Tab in the last cell starts a new row. Elsewhere Tab indents as usual.
 
@@ -129,3 +151,16 @@ For building, testing and releasing, see the [developer onboarding guide](ONBOAR
 - `src/openDefault.ts`: opening Markdown in the live editor, switching to source in place
 - `src/webview/toolbar.ts`: live editor toolbar
 - `src/preview.ts`: markdown-it plugin for the built-in preview
+
+[contributors-shield]: https://img.shields.io/github/contributors/christian-jaimes/diamond-documentation.svg?style=for-the-badge
+[contributors-url]: https://github.com/christian-jaimes/diamond-documentation/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/christian-jaimes/diamond-documentation.svg?style=for-the-badge
+[forks-url]: https://github.com/christian-jaimes/diamond-documentation/network/members
+[stars-shield]: https://img.shields.io/github/stars/christian-jaimes/diamond-documentation.svg?style=for-the-badge
+[stars-url]: https://github.com/christian-jaimes/diamond-documentation/stargazers
+[issues-shield]: https://img.shields.io/github/issues/christian-jaimes/diamond-documentation.svg?style=for-the-badge
+[issues-url]: https://github.com/christian-jaimes/diamond-documentation/issues
+[license-shield]: https://img.shields.io/github/license/christian-jaimes/diamond-documentation.svg?style=for-the-badge
+[license-url]: https://github.com/christian-jaimes/diamond-documentation/blob/main/LICENSE
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/christianjaimes
