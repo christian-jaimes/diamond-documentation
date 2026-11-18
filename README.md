@@ -93,6 +93,8 @@ Table insert, table format and blockquote are in the Command Palette under **Dia
 
 ### Layout
 
+For building, testing and releasing, see the [developer onboarding guide](ONBOARDING.md).
+
 - `src/extension.ts`: activation and wiring
 - `src/parser.ts`: link, heading and tag parser
 - `src/linkIndex.ts`: workspace file index, link resolution, backlinks, graph data
