@@ -128,16 +128,6 @@
         "category": "Diamond"
       },
       {
-        "command": "diamond.renumberLists",
-        "title": "Renumber Ordered Lists",
-        "category": "Diamond"
-      },
-      {
-        "command": "diamond.exportHtml",
-        "title": "Export Note to HTML",
-        "category": "Diamond"
-      },
-      {
         "command": "diamond.insertLink",
         "title": "Insert Link to File…",
         "category": "Diamond"

@@ -88,9 +88,25 @@ export function updateToc(text: string, pos: number): EditResult | undefined {
 const isTableRow = (t: string) => /^\s*\|.*\|\s*$/.test(t);
 const isSep = (r: string[]) => r.length > 0 && r.every(c => /^:?-+:?$/.test(c));
 
+/** Content ranges `[from, to)` (line-relative, trimmed) of every cell in a table row. */
+function cellRanges(line: string): [number, number][] {
+  const bars: number[] = [];
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '\\') { i++; } else if (line[i] === '|') { bars.push(i); }
+  }
+  const out: [number, number][] = [];
+  for (let k = 0; k + 1 < bars.length; k++) {
+    let from = bars[k] + 1, to = bars[k + 1];
+    while (from < to && line[from] === ' ') { from++; }
+    while (to > from && line[to - 1] === ' ') { to--; }
+    out.push([from, to]);
+  }
+  return out;
+}
+
 /**
- * Tab / Shift+Tab inside a table: re-align it and select the next / previous cell.
- * Tab in the last cell adds a row. Returns undefined when `pos` is not in a table.
+ * Tab / Shift+Tab inside a table: select the next / previous cell without touching the
+ * text. Tab in the last cell appends an empty row. Returns undefined when `pos` is not in a table.
  */
 export function tableNavigate(text: string, pos: number, forward: boolean): EditResult | undefined {
   const lines = linesOf(text);
@@ -100,33 +116,25 @@ export function tableNavigate(text: string, pos: number, forward: boolean): Edit
   while (start > 0 && isTableRow(lines[start - 1].text)) { start--; }
   while (end < lines.length - 1 && isTableRow(lines[end + 1].text)) { end++; }
 
-  let rows = lines.slice(start, end + 1).map(l => splitRow(l.text));
-  const cols = Math.max(...rows.map(r => r.length));
-  const before = lines[li].text.slice(0, pos - lines[li].from).replace(/\\\|/g, '');
-  const col = Math.min(cols - 1, Math.max(0, (before.match(/\|/g)?.length ?? 1) - 1));
-  const row = li - start;
-
+  const isSepLine = (i: number) => isSep(splitRow(lines[i].text));
+  const rel = pos - lines[li].from;
+  const cells = cellRanges(lines[li].text);
+  let col = cells.findIndex(([, to], k) => rel <= to + 1 || k === cells.length - 1);
+  if (col < 0) { col = 0; }
+  const cols = cells.length;
   const dir = forward ? 1 : -1;
-  let r = row, c = col;
+  let r = li, c = col;
   const step = () => { c += dir; if (c >= cols) { c = 0; r++; } else if (c < 0) { c = cols - 1; r--; } };
   step();
-  while (r >= 0 && r < rows.length && isSep(rows[r])) { step(); }
-  if (r < 0) { r = row; c = col; }
-  if (r >= rows.length) { rows = [...rows, Array.from({ length: cols }, () => '')]; r = rows.length - 1; c = 0; }
-
-  const widths = Array.from({ length: cols }, (_, k) => Math.max(3, ...rows.filter(x => !isSep(x)).map(x => (x[k] ?? '').length)));
-  const indent = /^\s*/.exec(lines[start].text)![0];
-  const out = rows.map(x => indent + (isSep(x)
-    ? '| ' + widths.map((w, k) => {
-      const cell = x[k] ?? '---';
-      return (cell.startsWith(':') ? ':' : '-') + '-'.repeat(w - 2) + (cell.endsWith(':') ? ':' : '-');
-    }).join(' | ') + ' |'
-    : '| ' + widths.map((w, k) => (x[k] ?? '').padEnd(w)).join(' | ') + ' |'));
-  const from = lines[start].from, to = lines[end].to;
-  let offset = out.slice(0, r).reduce((n, l) => n + l.length + 1, 0) + indent.length + 2;
-  for (let k = 0; k < c; k++) { offset += widths[k] + 3; }
-  const len = (rows[r][c] ?? '').length;
-  return { changes: [{ from, to, insert: out.join('\n') }], selections: [{ anchor: from + offset, head: from + offset + len }] };
+  while (r >= start && r <= end && isSepLine(r)) { step(); }
+  if (r < start) { return { changes: [], selections: [{ anchor: pos, head: pos }] }; }
+  if (r > end) {
+    const indent = /^\s*/.exec(lines[start].text)![0];
+    const row = '\n' + indent + '|' + '  |'.repeat(cols);
+    return { changes: [{ from: lines[end].to, to: lines[end].to, insert: row }], selections: [{ anchor: lines[end].to + indent.length + 3, head: lines[end].to + indent.length + 3 }] };
+  }
+  const target = cellRanges(lines[r].text)[c] ?? [0, 0];
+  return { changes: [], selections: [{ anchor: lines[r].from + target[0], head: lines[r].from + target[1] }] };
 }
 
 // ------------------------------------------------------------------ list numbering

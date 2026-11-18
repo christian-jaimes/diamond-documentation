@@ -564,6 +564,22 @@ function pasteText(view: EditorView, text: string) {
   view.focus();
 }
 
+/** Keeps ordered lists numbered 1, 2, 3… when items are added, removed or moved. */
+const autoRenumber = EditorState.transactionFilter.of(tr => {
+  if (!tr.docChanged || tr.annotation(External) || !tr.isUserEvent('input') && !tr.isUserEvent('delete') && !tr.isUserEvent('move') && !tr.isUserEvent('undo') && !tr.isUserEvent('redo')) { return tr; }
+  const item = /^\s*\d+[.)]\s/m;
+  let touches = false;
+  tr.changes.iterChanges((fromA, toA, fromB, toB) => {
+    if (touches) { return; }
+    const oldLines = tr.startState.doc.sliceString(tr.startState.doc.lineAt(fromA).from, tr.startState.doc.lineAt(toA).to);
+    const newLines = tr.newDoc.sliceString(tr.newDoc.lineAt(fromB).from, tr.newDoc.lineAt(toB).to);
+    touches = item.test(oldLines) || item.test(newLines);
+  });
+  if (!touches) { return tr; }
+  const fix = md.renumberLists(tr.newDoc.toString());
+  return fix ? [tr, { changes: fix.changes.map(c => ({ from: c.from, to: c.to, insert: c.insert })), sequential: true }] : tr;
+});
+
 const events = EditorView.domEventHandlers({
   mousedown(e) {
     const el = (e.target as HTMLElement).closest('.cm-d-link') as HTMLElement | null;
@@ -669,7 +685,6 @@ function handleFormat(view: EditorView, msg: any) {
     case 'insert': return applyResult(view, fmt.insertText(sels, msg.text, msg.selFrom, msg.selTo));
     case 'formatTable': return applyResult(view, fmt.formatTable(text, sels[0].head));
     case 'toc': return applyResult(view, md.updateToc(text, sels[0].head));
-    case 'renumber': return applyResult(view, md.renumberLists(text));
     case 'divider': return applyResult(view, fmt.divider(text, sels));
     case 'link': {
       const main = state.selection.main;
@@ -740,6 +755,7 @@ function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrac
     tableField,
     events,
     syncOut,
+    autoRenumber,
     reportSelection,
     theme,
   ];

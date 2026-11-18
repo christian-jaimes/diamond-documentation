@@ -3,9 +3,9 @@
 ## Unreleased
 
 - **Paste a URL over selected text to make a link** in the live editor: the selection becomes `[text](url)`.
-- **Table of contents.** New command **Diamond: Insert / Update Table of Contents** (both editors) builds a linked, nested list of the note's headings between `<!-- toc -->` and `<!-- /toc -->`. The list is refreshed on save; turn that off with `diamond.toc.updateOnSave`.
-- **Table navigation.** Tab / Shift+Tab move between table cells in both editors, re-aligning the table; Tab in the last cell adds a row. Outside tables Tab behaves as before.
-- **Renumber Ordered Lists** and **Export Note to HTML** commands. The export writes a standalone `.html` file next to the note (rendered by VS Code's Markdown support) that you can open in a browser to print or save as PDF.
+- **Table of contents.** A toolbar button (after the divider) and the command **Diamond: Insert / Update Table of Contents** (both editors) builds a linked, nested list of the note's headings between `<!-- toc -->` and `<!-- /toc -->`. The list is refreshed on save; turn that off with `diamond.toc.updateOnSave`.
+- **Table navigation.** Tab / Shift+Tab move between table cells in both editors without changing the text (use Format Table to align); Tab in the last cell adds a row. Outside tables Tab behaves as before.
+- **Ordered lists renumber themselves** in the live editor when items are added, removed or moved.
 
 - **Spell checking in the live editor.** Misspellings reported by the Code Spell Checker extension are underlined in the live editor; hover for the message and Quick Fixes (suggestions, add to dictionary…). Nothing is shown if the extension isn't installed. New setting `diamond.liveEditor.diagnostics` (`spelling` by default, `all`, `off`).
 - **`[[` autocomplete in the live editor.** Typing `[[` suggests every file in the workspace (notes, code, images… with fuzzy matching on name and path); choosing one completes the link and its closing `]]`. Type `#` after a note name (`[[Storage#`) to pick one of its headings. The popup uses your theme's suggest-widget colours. The source editor already offered the same completions, including headings.

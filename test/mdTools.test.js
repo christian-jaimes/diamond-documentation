@@ -19,11 +19,15 @@ assert.ok(ap(more, f.updateToc(more, 0)).includes('- [New](#new)'));
 
 const tbl = '| a | b |\n| --- | --- |\n| 1 | 2 |';
 x = f.tableNavigate(tbl, 2, true);
-assert.strictEqual(ap(tbl, x).slice(x.selections[0].anchor, x.selections[0].head), 'b');
+assert.deepStrictEqual(x.selections[0], { anchor: 6, head: 7 });          // a -> b, text untouched
+assert.strictEqual(x.changes.length, 0);
+x = f.tableNavigate(tbl, 6, true);
+assert.deepStrictEqual(x.selections[0], { anchor: 26, head: 27 });        // b -> first body cell (skips the --- row)
 x = f.tableNavigate(tbl, 31, true);
-assert.strictEqual(ap(tbl, x).split('\n').length, 4);
-x = f.tableNavigate(tbl, 2, false);
-assert.strictEqual(x.selections[0].anchor, 2);
+assert.strictEqual(ap(tbl, x), tbl + '\n|  |  |');
+assert.strictEqual(x.selections[0].anchor, tbl.length + 3);
+x = f.tableNavigate(tbl, 26, false);
+assert.deepStrictEqual(x.selections[0], { anchor: 6, head: 7 });
 assert.strictEqual(f.tableNavigate('plain', 0, true), undefined);
 
 const lst = '1. a\n3. b\n   - x\n   1. p\n   5. q\n7. c\n\ntext\n\n4. z\n6. y';
