@@ -225,7 +225,7 @@ class MinimapPlugin {
     this.dom.style.width = width + 'px';
     this.dom.style.left = cfg.side === 'left' ? '0' : 'auto';
     this.dom.style.right = cfg.side === 'right' ? sbw + 'px' : 'auto';
-    this.dom.classList.toggle('cm-d-minimap-always', cfg.showSlider === 'always');
+    this.dom.classList.toggle('cm-d-minimap-always', true) // always shown: with no scrollbar it is the scroll position indicator;
     this.dom.classList.toggle('cm-d-minimap-left', cfg.side === 'left');
 
     // Slider: always cheap, even when the picture itself is unchanged.
