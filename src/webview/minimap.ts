@@ -128,6 +128,7 @@ class MinimapPlugin {
     this.resize.disconnect();
     this.theme.disconnect();
     this.view.scrollDOM.removeEventListener('scroll', this.onScroll);
+    this.view.scrollDOM.classList.remove('cm-d-no-scrollbar');
     this.view.scrollDOM.style.paddingLeft = this.view.scrollDOM.style.paddingRight = '';
     this.view.dom.style.removeProperty('--diamond-minimap-inset');
     this.dom.remove();
@@ -209,6 +210,8 @@ class MinimapPlugin {
     const viewW = view.dom.clientWidth;
     const on = cfg.enabled && viewW >= 250 && sc.clientHeight > 0;
     this.dom.style.display = on ? '' : 'none';
+    // The minimap's slider is the scrollbar while it is shown (no second scrollbar next to it).
+    sc.classList.toggle('cm-d-no-scrollbar', on);
     if (!on) { this.setPadding(cfg, 0); return; }
 
     const dpr = window.devicePixelRatio || 1;
@@ -216,7 +219,7 @@ class MinimapPlugin {
     const geo = this.geo = this.compute(cfg);
     const width = Math.min(Math.round(cfg.maxColumn * cwD / dpr), Math.max(40, Math.floor(viewW / 4)));
     const cols = Math.floor(width * dpr / cwD);
-    const sbw = sc.offsetWidth - sc.clientWidth;
+    const sbw = 0;
     this.width = width;
     this.setPadding(cfg, width);
     this.dom.style.width = width + 'px';

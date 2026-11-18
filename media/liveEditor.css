@@ -181,7 +181,7 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-d-diag-fix { display: block; width: 100%; text-align: left; padding: 2px 10px; background: none; border: 0; color: var(--vscode-textLink-foreground); font: inherit; cursor: pointer; }
 .cm-d-diag-fix:hover { background: var(--vscode-list-hoverBackground); color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground)); }
 
-/* Minimap (src/webview/minimap.ts): sits beside the scrollbar, like VS Code's */
+/* Minimap (src/webview/minimap.ts): replaces the scrollbar (its slider scrolls), like VS Code's */
 .cm-d-minimap { position: absolute; top: 0; bottom: 0; z-index: 5; background: var(--vscode-minimap-background, transparent); touch-action: none; user-select: none; cursor: default; }
 .cm-d-minimap-canvas { position: absolute; top: 0; left: 0; display: block; }
 .cm-d-minimap-slider {
@@ -191,3 +191,5 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 .cm-d-minimap:hover .cm-d-minimap-slider, .cm-d-minimap-always .cm-d-minimap-slider, .cm-d-minimap-active .cm-d-minimap-slider { opacity: 1; }
 .cm-d-minimap-slider:hover { background: var(--vscode-minimapSlider-hoverBackground, rgba(100, 100, 100, 0.35)); }
 .cm-d-minimap-active .cm-d-minimap-slider { background: var(--vscode-minimapSlider-activeBackground, rgba(191, 191, 191, 0.2)); }
+.cm-scroller.cm-d-no-scrollbar { scrollbar-width: none; }
+.cm-scroller.cm-d-no-scrollbar::-webkit-scrollbar { display: none; }
