@@ -6,7 +6,8 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirro
 // Only the language and two commands: markdown() itself would pull in HTML/CSS/JS parsers.
 import { deleteMarkupBackward, insertNewlineContinueMarkup, markdownLanguage } from '@codemirror/lang-markdown';
 import { HighlightStyle, Language, LanguageSupport, indentUnit, syntaxHighlighting, syntaxTree } from '@codemirror/language';
-import { search, searchKeymap } from '@codemirror/search';
+import { searchKeymap } from '@codemirror/search';
+import { findKeymap, findWidget } from './findWidget';
 import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
 import type { MarkdownParser } from '@lezer/markdown';
@@ -516,8 +517,9 @@ const theme = EditorView.theme({
   '&.cm-focused': { outline: 'none' },
   '.cm-cursor': { borderLeftColor: 'var(--vscode-editorCursor-foreground)', borderLeftWidth: '2px' },
   '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': { backgroundColor: 'var(--vscode-editor-selectionBackground) !important' },
-  '.cm-panels': { backgroundColor: 'var(--vscode-editorWidget-background)', color: 'var(--vscode-editorWidget-foreground)' },
-  '.cm-searchMatch': { backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)' },
+  '.cm-searchMatch': { backgroundColor: 'var(--vscode-editor-findMatchHighlightBackground)', outline: '1px solid var(--vscode-editor-findMatchHighlightBorder, transparent)' },
+  '.cm-searchMatch-selected': { backgroundColor: 'var(--vscode-editor-findMatchBackground)', outline: '1px solid var(--vscode-editor-findMatchBorder, transparent)' },
+  '.cm-find-scope': { backgroundColor: 'var(--vscode-editor-findRangeHighlightBackground)' },
 });
 
 // ------------------------------------------------------------------ links and events
@@ -699,12 +701,12 @@ function createEditor(text: string, settings: { toolbar?: boolean; readableLineL
     indentUnit.of('    '),
     markdownSupport,
     syntaxHighlighting(highlight),
-    search({ top: true }),
+    findWidget,
     keymap.of([
       { key: 'Enter', run: insertNewlineContinueMarkup },
       { key: 'Backspace', run: deleteMarkupBackward },
       indentWithTab,
-      ...defaultKeymap.filter(notReserved), ...historyKeymap, ...searchKeymap.filter(notReserved),
+      ...defaultKeymap.filter(notReserved), ...historyKeymap, ...findKeymap, ...searchKeymap.filter(notReserved),
     ]),
     focusField,
     inlinePlugin,

@@ -98,3 +98,47 @@ body.readable #toolbar { padding-left: max(12px, calc((100% - 820px) / 2 + 36px)
 
 .cm-d-image-row .cm-d-image { margin: 4px 6px 4px 0; }
 .cm-d-table-wrap .cm-d-image { max-height: 120px; vertical-align: middle; }
+
+/* Find / replace: modelled on VS Code's own find widget (see src/webview/findWidget.ts) */
+.cm-editor .cm-panels.cm-panels-top { position: absolute; top: 0; right: 14px; left: auto; width: auto; z-index: 300; pointer-events: none; background: transparent; border: 0; }
+.cm-find-widget {
+  pointer-events: auto; box-sizing: border-box; width: 419px; max-width: calc(100vw - 40px);
+  display: flex; align-items: flex-start; gap: 2px; padding: 4px 4px 4px 0; margin-right: 0;
+  background: var(--vscode-editorWidget-background); color: var(--vscode-editorWidget-foreground, var(--vscode-foreground));
+  border: 1px solid var(--vscode-editorWidget-border, transparent); border-top: 0; border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 8px 2px var(--vscode-widget-shadow, rgba(0, 0, 0, .36));
+  font: 13px/1.4 var(--vscode-font-family, sans-serif);
+}
+.cm-find-widget button { font: inherit; color: inherit; }
+.cm-find-rows { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.cm-find-row { display: flex; align-items: center; gap: 2px; height: 25px; }
+.cm-find-replace-row { display: none; }
+.cm-find-replace-on .cm-find-replace-row { display: flex; }
+.cm-find-expand { align-self: stretch; height: auto; width: 20px; margin: 0 2px 0 2px; flex: none; }
+.cm-find-btn, .cm-find-toggle {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 22px; height: 22px; padding: 0; border: 1px solid transparent; border-radius: 5px; background: none; cursor: pointer;
+}
+.cm-find-btn:hover { background: var(--vscode-toolbar-hoverBackground, rgba(127, 127, 127, .2)); }
+.cm-find-btn.on { background: var(--vscode-inputOption-activeBackground); border-color: var(--vscode-inputOption-activeBorder, transparent); color: var(--vscode-inputOption-activeForeground, inherit); }
+.cm-find-toggle { width: 20px; height: 20px; border-radius: 3px; }
+.cm-find-toggle:hover { background: var(--vscode-inputOption-hoverBackground, rgba(127, 127, 127, .2)); }
+.cm-find-toggle.on { background: var(--vscode-inputOption-activeBackground); border-color: var(--vscode-inputOption-activeBorder, transparent); color: var(--vscode-inputOption-activeForeground, inherit); }
+.cm-find-btn:focus-visible, .cm-find-toggle:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
+.cm-find-btn svg, .cm-find-toggle svg { width: 16px; height: 16px; fill: currentColor; }
+.cm-find-input {
+  display: flex; align-items: center; flex: 1; min-width: 0; height: 25px; box-sizing: border-box; padding-right: 2px;
+  background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, transparent); border-radius: 2px;
+}
+.cm-find-input:focus-within { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
+.cm-find-input.cm-find-error { border-color: var(--vscode-inputValidation-errorBorder, #be1100); }
+.cm-find-input input {
+  flex: 1; min-width: 0; height: 100%; padding: 0 6px; border: 0; outline: 0; background: none;
+  color: var(--vscode-input-foreground); font: inherit;
+}
+.cm-find-input input::placeholder { color: var(--vscode-input-placeholderForeground); }
+.cm-find-options { display: flex; gap: 1px; flex: none; }
+.cm-find-count { flex: none; min-width: 69px; padding: 0 4px; box-sizing: border-box; text-align: center; white-space: nowrap; }
+.cm-find-none .cm-find-count { color: var(--vscode-errorForeground, inherit); }
+.cm-find-replace-row .cm-find-input { flex: none; width: calc(100% - 175px); }
+.cm-find-replace-row .cm-find-btn:first-of-type { margin-left: 4px; }
