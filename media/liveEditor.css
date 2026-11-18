@@ -1,4 +1,4 @@
-html, body { margin: 0; padding: 0; height: 100%; background: var(--vscode-editor-background); }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--vscode-editor-background); overflow: hidden; }
 #editor { height: 100vh; }
 body.readable .cm-content { max-width: 820px; margin: 0 auto; }
 
