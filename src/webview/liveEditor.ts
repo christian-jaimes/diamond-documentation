@@ -11,6 +11,7 @@ import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { handleLinkMessage, linkCompletion, prefetchLinkFiles } from './linkComplete';
 import { diagnosticsSupport, handleDiagnosticMessage } from './diagnostics';
 import { findKeymap, findWidget } from './findWidget';
+import { minimapSupport, updateMinimap } from './minimap';
 import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
 import type { MarkdownParser } from '@lezer/markdown';
@@ -716,7 +717,7 @@ function replaceText(view: EditorView, text: string) {
 let view: EditorView | undefined;
 let toolbar: ReturnType<typeof createToolbar> | undefined;
 
-function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrackets?: boolean; readableLineLength?: boolean; fontSize?: number; fontFamily?: string; }) {
+function createEditor(text: string, settings: { toolbar?: boolean; minimap?: unknown; autoCloseBrackets?: boolean; readableLineLength?: boolean; fontSize?: number; fontFamily?: string; }) {
   const body = document.body;
   body.classList.toggle('readable', settings.readableLineLength !== false);
   body.style.setProperty('--diamond-font-size', settings.fontSize ? settings.fontSize + 'px' : null);
@@ -746,6 +747,7 @@ function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrac
     ]),
     linkCompletion(msg => vscode.postMessage(msg)),
     diagnosticsSupport(msg => vscode.postMessage(msg)),
+    minimapSupport(settings.minimap),
     keymap.of([
       { key: 'Tab', run: v => tableTab(v, true) },
       { key: 'Shift-Tab', run: v => tableTab(v, false) },
@@ -790,6 +792,7 @@ window.addEventListener('message', ev => {
       seq = msg.seq;
       if (view) { replaceText(view, msg.text); }
       break;
+    case 'minimap': if (view) { updateMinimap(view, msg.minimap); } break;
     case 'format': if (view) { handleFormat(view, msg.format); } break;
     case 'resolved':
       for (const [k, v] of Object.entries(msg.items as Record<string, Resolved>)) { resolved.set(k, v); pending.delete(k); }
