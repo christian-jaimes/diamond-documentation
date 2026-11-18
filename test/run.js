@@ -142,4 +142,5 @@ const { noteSignature, parseNote: parse } = require('../out/parser');
 assert.strictEqual(noteSignature(parse('a [[x]] #t')), noteSignature(parse('b c [[x]] d #t')));
 assert.notStrictEqual(noteSignature(parse('[[x]]')), noteSignature(parse('[[y]]')));
 
+require('./mdTools.test.js');
 console.log('all tests passed');

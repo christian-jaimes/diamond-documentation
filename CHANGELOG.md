@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Paste a URL over selected text to make a link** in the live editor: the selection becomes `[text](url)`.
+- **Table of contents.** New command **Diamond: Insert / Update Table of Contents** (both editors) builds a linked, nested list of the note's headings between `<!-- toc -->` and `<!-- /toc -->`. The list is refreshed on save; turn that off with `diamond.toc.updateOnSave`.
+- **Table navigation.** Tab / Shift+Tab move between table cells in both editors, re-aligning the table; Tab in the last cell adds a row. Outside tables Tab behaves as before.
+- **Renumber Ordered Lists** and **Export Note to HTML** commands. The export writes a standalone `.html` file next to the note (rendered by VS Code's Markdown support) that you can open in a browser to print or save as PDF.
+
 - **Spell checking in the live editor.** Misspellings reported by the Code Spell Checker extension are underlined in the live editor; hover for the message and Quick Fixes (suggestions, add to dictionary…). Nothing is shown if the extension isn't installed. New setting `diamond.liveEditor.diagnostics` (`spelling` by default, `all`, `off`).
 - **`[[` autocomplete in the live editor.** Typing `[[` suggests every file in the workspace (notes, code, images… with fuzzy matching on name and path); choosing one completes the link and its closing `]]`. Type `#` after a note name (`[[Storage#`) to pick one of its headings. The popup uses your theme's suggest-widget colours. The source editor already offered the same completions, including headings.
 - **Auto-closing brackets in the live editor:** typing `(`, `[`, `{` or `"` inserts the closing character. Typing the closer skips over it, Backspace on an empty pair removes both, and typing an opener over selected text wraps it. A `"` right after a word character (as in `don"t`) is left alone. Turn it off with `diamond.liveEditor.autoCloseBrackets`; the source editor follows VS Code's `editor.autoClosingBrackets`.

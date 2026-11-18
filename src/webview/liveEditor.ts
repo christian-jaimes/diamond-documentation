@@ -15,6 +15,7 @@ import { tags as t } from '@lezer/highlight';
 import type { SyntaxNode } from '@lezer/common';
 import type { MarkdownParser } from '@lezer/markdown';
 import * as fmt from '../shared/format';
+import * as md from '../shared/mdTools';
 import { countWords, readableText } from '../shared/stats';
 import { EXTERNAL, IMAGE, splitWikiTarget } from '../parser';
 import { Highlight, Tag, WikiLink } from './markdownExtensions';
@@ -639,11 +640,21 @@ function applyResult(view: EditorView, r: fmt.EditResult | undefined) {
   if (!r) { return; }
   view.dispatch({
     changes: r.changes,
-    selection: EditorSelection.create(r.selections.map(s => EditorSelection.range(s.anchor, s.head))),
+    selection: r.selections.length ? EditorSelection.create(r.selections.map(s => EditorSelection.range(s.anchor, s.head))) : undefined,
     userEvent: 'input.format',
     scrollIntoView: true,
   });
   view.focus();
+}
+
+/** Tab / Shift+Tab inside a table moves between cells (adding a row after the last one). */
+function tableTab(view: EditorView, forward: boolean): boolean {
+  const { main } = view.state.selection;
+  if (view.state.selection.ranges.length > 1 || view.state.doc.lineAt(main.from).number !== view.state.doc.lineAt(main.to).number) { return false; }
+  const r = md.tableNavigate(view.state.doc.toString(), main.head, forward);
+  if (!r) { return false; }
+  applyResult(view, r);
+  return true;
 }
 
 function handleFormat(view: EditorView, msg: any) {
@@ -657,6 +668,8 @@ function handleFormat(view: EditorView, msg: any) {
     case 'codeBlock': return applyResult(view, fmt.codeBlock(text, sels, msg.lang));
     case 'insert': return applyResult(view, fmt.insertText(sels, msg.text, msg.selFrom, msg.selTo));
     case 'formatTable': return applyResult(view, fmt.formatTable(text, sels[0].head));
+    case 'toc': return applyResult(view, md.updateToc(text, sels[0].head));
+    case 'renumber': return applyResult(view, md.renumberLists(text));
     case 'divider': return applyResult(view, fmt.divider(text, sels));
     case 'link': {
       const main = state.selection.main;
@@ -715,6 +728,8 @@ function createEditor(text: string, settings: { toolbar?: boolean; autoCloseBrac
     linkCompletion(msg => vscode.postMessage(msg)),
     diagnosticsSupport(msg => vscode.postMessage(msg)),
     keymap.of([
+      { key: 'Tab', run: v => tableTab(v, true) },
+      { key: 'Shift-Tab', run: v => tableTab(v, false) },
       { key: 'Enter', run: insertNewlineContinueMarkup },
       { key: 'Backspace', run: deleteMarkupBackward },
       indentWithTab,

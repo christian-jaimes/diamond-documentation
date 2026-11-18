@@ -12,6 +12,7 @@ VS Code extension for managing project documentation through a live Markdown edi
 | --- | --- |
 | Live editor | Markdown files open in an editable, formatted view by default, with a formatting toolbar: headings, bold, italic, highlights, tags, links, checkboxes, bullets, quotes, tables, code blocks, rules and images are shown rendered. Images can be Markdown (<code>![alt]&#40;path)</code>, sized with <code>![alt&#124;300]&#40;path)</code>), embeds (`![[diagram.png]]`), HTML `<img>` tags (including `<p align="center">`), linked badges or table cells. The raw Markdown appears only on the lines you are editing. |
 | Formatting | Toggle bold, italic, strikethrough, `==highlight==` and inline code; code blocks with a language picker; bullet, numbered and checkbox lists; heading cycle; blockquote; table insert and table auto-align. The same shortcuts work in the live editor and in the source editor. |
+| Editing helpers | Paste a URL over selected text to make a link. Tab / Shift+Tab move between table cells (and keep the table aligned); Tab in the last cell adds a row. Insert a table of contents that stays current on save. Renumber ordered lists. Export a note to a standalone HTML file. |
 | Links | `[[note]]`, `[[note#Heading]]`, `[[note#^block-id]]`, `[[note\|alias]]`, `[[folder/note]]`, `[[schema.sql]]`, `[[src/api.ts]]`, `![[diagram.png]]`, and normal <code>[text]&#40;path)</code> links |
 | Navigation | Click a link in the live editor (Ctrl/Cmd+Click while editing that line), or Ctrl+Click / F12 in the source editor. Hover a link to preview its target. Clicking a link to a note that does not exist yet offers to create it. |
 | Autocomplete | Type `[[` to list every file in the project; type `[[note#` to list that note's headings |
@@ -29,6 +30,14 @@ Markdown files open in the live editor automatically. To see the raw Markdown, c
 The toolbar has a text-style picker (normal text, headings 1–6), bold, italic, strikethrough, highlight, inline code, bullet / numbered / checkbox lists, quote, link to a file, code block, table and divider. Buttons light up for the formatting under the cursor.
 
 **Link autocomplete.** Type `[[` to get a fuzzy-searchable list of every file in the workspace and press Enter to complete the link. After a note name, type `#` (`[[Setup Guide#`) to choose one of its headings. This works in both the live editor and the source editor. The live editor also closes brackets and quotes as you type (`diamond.liveEditor.autoCloseBrackets`).
+
+**Table of contents.** Run **Diamond: Insert / Update Table of Contents** to insert a linked list of your headings at the cursor, between `<!-- toc -->` and `<!-- /toc -->` markers. Whenever the note is saved the list between the markers is refreshed (turn this off with `diamond.toc.updateOnSave`). The document's single `#` title is left out.
+
+**Tables.** Inside a table, Tab and Shift+Tab move to the next or previous cell and re-align the pipes; Tab in the last cell starts a new row. Elsewhere Tab indents as usual.
+
+**Links from pasted URLs.** Select some text and paste a web address: the text becomes `[text](address)`.
+
+**Lists and export.** **Diamond: Renumber Ordered Lists** fixes numbering after you reorder items. **Diamond: Export Note to HTML** saves a standalone `.html` file next to the note, using VS Code's Markdown renderer; open it in a browser to print or save as PDF.
 
 **Spell checking and other diagnostics.** If you have the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extension, its misspelled words get a wavy underline in the live editor too. Hover a word for the message and a **Quick Fix** list (suggested spellings, add to dictionary, ignore…); click one to apply it. Spell checking requires that extension; without it nothing is underlined and nothing breaks. Set `diamond.liveEditor.diagnostics` to `all` to also show other diagnostics (linters, etc.) or `off` to hide them.
 
@@ -78,7 +87,7 @@ These shortcuts apply in Markdown files and in the live editor.
 | Live editor ⇄ source | Ctrl+Shift+V | Cmd+Shift+V |
 | Graph view | Ctrl+Alt+G | Cmd+Alt+G |
 
-Table insert, table format and blockquote are in the Command Palette under **Diamond:**. Any shortcut can be changed in *Keyboard Shortcuts*.
+Table insert, table format, blockquote, table of contents, list renumbering and HTML export are in the Command Palette under **Diamond:**. Any shortcut can be changed in *Keyboard Shortcuts*.
 
 ## Settings
 
@@ -95,6 +104,7 @@ Table insert, table format and blockquote are in the Command Palette under **Dia
 | `diamond.graph.showFiles` / `showOrphans` | `true` | Default graph filters |
 | `diamond.graph.nodeLabel` | `title` | How graph nodes are named: `title` (the note's first `#` heading, or parent folder + file name such as `guides/setup` when it has none or is not Markdown) or `fileName` (just the file name). Hover a node for its full path. |
 | `diamond.liveEditor.readableLineLength` / `fontSize` / `fontFamily` | | Live editor appearance |
+| `diamond.toc.updateOnSave` | `true` | Refresh a `<!-- toc -->` table of contents when the note is saved |
 | `diamond.listContinuation` | `true` | Enter continues lists in the source editor |
 
 
