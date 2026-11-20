@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Marketplace and GitHub listing now position Diamond as a knowledge manager and a knowledge layer for project docs: new display name "Diamond: Knowledge Manager for Markdown Notes - Wikilinks & Graph", new description, keywords and README introduction. The extension ID is unchanged.
+
 ## 1.0.1
 
 - Marketplace and GitHub listing: badges, new display name "Diamond: Markdown Notes, Wikilinks & Graph", keyword-rich description, expanded keywords and categories, and a clearer README introduction. The extension ID is unchanged.
