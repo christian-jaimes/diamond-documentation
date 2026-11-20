@@ -1,6 +1,6 @@
-<p align="center"><img src="media/Diamond%20Documentation%20Banner.png" alt="Diamond Documentation Banner"></p>
+<p align="center"><img src="media/diamond-documentation-banner.png" alt="Diamond Documentation Banner"></p>
 
-# Diamond: Markdown Notes, Wikilinks & Graph
+# Diamond: Knowledge Manager for Markdown Notes - Wikilinks & Graph
 
 <div align="center">
 
@@ -13,9 +13,9 @@
 
 </div>
 
-<p align="center"><b>Markdown notes · Wikilinks · Backlinks · Graph view · Local-first · Git-friendly</b></p>
+<p align="center"><b>Knowledge layer for your docs · Wikilinks · Backlinks · Knowledge graph · Local-first · Git-friendly</b></p>
 
-**A live Markdown editor for VS Code with wikilinks, backlinks, an interactive knowledge graph, table of contents and spellcheck, for project docs and notes that stay local, plain-text and Git-friendly.** Write and navigate project documentation inside VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
+**A knowledge manager for VS Code: a knowledge layer over your project docs, with a live Markdown editor, wikilinks, backlinks, an interactive knowledge graph, table of contents and spellcheck. Everything stays local, plain-text and Git-friendly.** Turn scattered Markdown files into a connected knowledge base and navigate it without leaving VS Code. Notes are plain Markdown files that live next to your code, so Git versions them like everything else, and they can link to **any** file in the project:  `.md` files, `.sql` scripts, `.ts` sources, `.html` pages, images, binaries, etc.
 
 ![The live editor with its formatting toolbar, and the Diamond side bar with the local graph, colour legend, backlinks and outgoing links](media/screenshot.png)
 
